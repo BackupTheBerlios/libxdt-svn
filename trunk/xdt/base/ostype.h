@@ -1,7 +1,7 @@
 /*******************************************************************************
 * file:         ostype.h                                                       *
 * version:      0.0.1                                                          *
-* author:       mice, ICQ: 332-292-380, mailto:my_mice@mail.ru                 *
+* author:       mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com           *
 * description:  defines specific for OS                                        *
 * tests:        ok                                                             *
 *******************************************************************************/
