@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // defines
 
-#if defined _MACOS_ || defined _MACOSX_ || defined MACOS || defined MACOSX
+#if defined _MACOS_ || defined _MACOSX_ || defined __APPLE__
 	// cool, it's mac os
 	#define XDT_OS_MACOS
 	#define XDT_OSTYPE_UNIX
