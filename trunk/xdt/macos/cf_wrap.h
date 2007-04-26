@@ -40,6 +40,11 @@ namespace xdt {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// mac namespace
+namespace mac {
+
+
+////////////////////////////////////////////////////////////////////////////////
 // cf_ref_w class declaration
 //! \brief Wrapper class for \c CFTypeRef like objects (CFString, CFArray, ...)
 /*!	Template class to wrap different Mac OS Core Foundation objects.
@@ -133,7 +138,7 @@ typedef cf_ref_w<CFDataRef> cf_data_w;
 	Example:
 	\code
 	// declare new type for CFStringRef wrapper
-	typedef xdt::cf_ref_w<CFStringRef> cf_string_w;
+	typedef xdt::mac::cf_ref_w<CFStringRef> cf_string_w;
 
 	// create wrapped object
 	cf_string_w string_wrapped(
@@ -169,6 +174,10 @@ template <class ref_t>
 cf_ref_w<ref_t>::~cf_ref_w() {
 	if (0 != _ref) CFRelease(_ref);
 }
+
+
+
+}	// mac namespace
 
 
 
