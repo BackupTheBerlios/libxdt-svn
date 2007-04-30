@@ -172,7 +172,6 @@ private:
 	Handle _h;
 	
 	//! \brief \c true when Handle is locked
-	//! \nrief
 	bool _locked;
 };
 

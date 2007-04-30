@@ -46,18 +46,39 @@ namespace mac {
 
 ////////////////////////////////////////////////////////////////////////////////
 // cf_ref_w class declaration
-//! \brief Wrapper class for \c CFTypeRef like objects (CFString, CFArray, ...)
-/*!	Template class to wrap different Mac OS Core Foundation objects.
+//! \brief Wrapper class for Core Foundation Mac OS objects
+//!	(CFString, CFArray, ...)
+/*!	Template class wraps different Mac OS Core Foundation objects.
 	Like those with "CF" prefix and many others, without it.
 
 	This class serves one purpose - to release Core Foundation object when it
-	is not needed any more. It is very small and clear.
+	is not needed anymore. It is very small and clear.
 
 	\warning This class is not thread safe. It is very simple. To achive more
 	complex object management you have to write additional code.
 
 	\warning Use this wrapper class only with those Core Foundation objects,
 	that need \c CFRelease().
+
+	It's very easy to use this template. The main idea is "don't do it more
+	complicated that it is". See example:
+
+	\code
+	// declare new type for CFStringRef wrapper
+	typedef xdt::mac::cf_ref_w<CFStringRef> cf_string_w;
+
+	// create wrapped object
+	cf_string_w string_wrapped(
+			CFStringCreateWithCString(0, "Hello World!",
+									  kCFStringEncodingMacRoman)
+	);
+	if (0 == string_wrapped.get()) {
+		return -1;	// we get an error
+	}
+	\endcode
+
+	It's important always to remember that general constructor
+	(not copy-constructor) do NOT retains Core Foundation object.
 */
 template <class ref_t>
 class cf_ref_w {
@@ -87,7 +108,21 @@ public:
 	inline ref_t operator()() const { return _ref; }
 
 	//! \brief Returns wrapped CF object reference
-	/*!	This can be used only for non-mutable CF objects.
+	/*!	In fact, through this method you see all Core Foundation objects
+		as non-mutable. It can be useful some times, to guarantee in compile
+		time, that object will not be changed in this function call.
+
+		Example:
+		\code
+		typedef xdt::mac::cf_ref_w<CFMutableArray> cf_marray_w;
+
+		cf_marray_w marray_wrapped(
+			CFArrayCreateMutable(0, 0, kCFTypeArrayCallBacks)
+		);
+
+		// this will fail in compile time (error in passing first param)
+		CFArrayAppendValue(marray_wrapped.ref(), string_wrapped.get());
+		\endcode
 	*/
 	inline const ref_t &ref() const { return _ref; }
 	
@@ -111,6 +146,9 @@ typedef cf_ref_w<CFStringRef> cf_string_w;
 
 //! \brief Wrapper for CFArray
 typedef cf_ref_w<CFArrayRef> cf_array_w;
+
+//! \brief Wrapper for CFMutableArray
+typedef cf_ref_w<CFMutableArray> cf_marray_w;
 
 //! \brief Wrapper for CFURL
 typedef cf_ref_w<CFURLRef> cf_url_w;
