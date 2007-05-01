@@ -15,7 +15,7 @@
 // headers
 
 // code configuration headers
-// none
+#include <xdt/base/ostype.h>
 
 // standart C++ library headers
 // none
@@ -31,7 +31,7 @@
 #endif
 
 // xdt headers
-#include <xdt/base/ostype.h>
+// none
 
 
 ////////////////////////////////////////////////////////////////////////////////
