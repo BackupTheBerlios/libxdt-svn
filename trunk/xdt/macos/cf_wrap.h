@@ -144,6 +144,9 @@ private:
 //! \brief Wrapper for CFString
 typedef cf_ref_w<CFStringRef> cf_string_w;
 
+//! \brief Wrapper for CFMutableStringRef
+typedef cf_ref_w<CFMutableStringRef> cf_mstring_w;
+
 //! \brief Wrapper for CFArray
 typedef cf_ref_w<CFArrayRef> cf_array_w;
 
@@ -156,8 +159,14 @@ typedef cf_ref_w<CFURLRef> cf_url_w;
 //! \brief Wrapper for CFDictionary
 typedef cf_ref_w<CFDictionaryRef> cf_dict_w;
 
+//! \brief Wrapper for CFMutableDictionaryRef
+typedef cf_ref_w<CFMutableDictionaryRef> cf_mdict_w;
+
 //! \brief Wrapper for CFData
 typedef cf_ref_w<CFDataRef> cf_data_w;
+
+//! \brief Wrapper for CFMutableDataRef
+typedef cf_ref_w<CFMutableDataRef> cf_mdata_w;
 
 
 
