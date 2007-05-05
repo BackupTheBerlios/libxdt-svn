@@ -41,6 +41,9 @@
 	// ok, it's windows
 	#define XDT_OS_WINDOWS
 	#define XDT_OSTYPE_WINDOWS
+#elif defined LINUX
+	#define XDT_OS_LINUX
+	#define XDT_OSTYPE_UNIX
 #else
 	// bad, no support for this OS now
 	#error No support for target OS

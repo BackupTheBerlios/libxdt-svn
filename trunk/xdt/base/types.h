@@ -15,7 +15,7 @@
 // headers
 
 // code configuration headers
-// none
+#include <xdt/base/ostype.h>
 
 // standart C++ library headers
 // none
@@ -24,16 +24,18 @@
 // none
 
 // OS specific headers
-#ifdef XDT_OS_MACOS
+#ifdef			XDT_OS_MACOS
 	#include <Carbon/Carbon.h>
-#elif defined XDT_OS_WINDOWS
+#elif defined	XDT_OS_WINDOWS
 	#include <windows.h>
+#elif defined	XDT_OS_LINUX
+
 #else
 	#error No support for target OS
 #endif
 
 // xdt headers
-#include <xdt/base/ostype.h>
+// none
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +68,11 @@ namespace xdt {
 	//! \brief Signed integer 32bit type for Windows
 	typedef LONG	sint32;
 
-#else
+#elif defined XDT_OS_LINUX
+
+	typedef unsigned int uint32;
+
+#else 
 	#error No support for target OS
 #endif
 
