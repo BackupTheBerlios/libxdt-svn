@@ -33,17 +33,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 // defines
 
-#if defined _MACOS_ || defined _MACOSX_ || defined __APPLE__
-	// cool, it's mac os
+#if defined __APPLE__
+	// cool, it's mac os!
 	#define XDT_OS_MACOS
 	#define XDT_OSTYPE_UNIX
-#elif defined WIN32 || defined WIN64 || defined WINDOWS
+#elif defined __linux__
+	// fine, it's linux
+	#define XDT_OS_LINUX
+	#define XDT_OSTYPE_UNIX
+#elif defined __windows__ || defined WIN32 || defined WIN64
 	// ok, it's windows
 	#define XDT_OS_WINDOWS
 	#define XDT_OSTYPE_WINDOWS
-#elif defined LINUX
-	#define XDT_OS_LINUX
-	#define XDT_OSTYPE_UNIX
 #else
 	// bad, no support for this OS now
 	#error No support for target OS
