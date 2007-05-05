@@ -47,7 +47,9 @@ namespace mac {
 ////////////////////////////////////////////////////////////////////////////////
 // handle_w class declaration
 //! \brief Wrapper class for \c Handle Mac OS object
-/*!	This class wrapps Handle Mac OS object. It calls DisposeHandle() in
+/*!	\warning Don't use this class now, it's bad yet	
+
+	This class wrapps Handle Mac OS object. It calls DisposeHandle() in
 	destructor, so there is no need to release it by hands. It is the main
 	and the only feature of this class. It's very simple and clear.
 
