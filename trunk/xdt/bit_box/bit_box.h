@@ -59,11 +59,23 @@ namespace bit_box {
 
 ////////////////////////////////////////////////////////////////////////////////
 // basic_bit_box class declaration
-//! \brief Simplest unit of bit_box data. Small part of all big block.
-/*!	It's base class for all bit_box.
+//! \brief Simplest unit of bit_box data. Also base class for all bit_box.
+/*!	It knows:
+	- Where its data is. Every basic_bit_box has pointer on its data.
+	- Size of this data.
+	- Type of this data.
 
-	It knows:
-	- where it's d
+	Some words about types. bit_box works with raw bytes, it has no idea with
+	what really data it operates. bit_box type is just a number, only 0 is
+	reserved to represent another (nested) bit_box. It's up to class user
+	to decide, what type some data has. Also, bit_box has some predefined
+	types, and it's good idea for user types not to overlap with them.
+
+	basic_bit_box defines some types, to unify it's usage:
+	- basic_bit_box::sz_t to represent some size or length
+	- basic_bit_box::type_t for type identifiers
+
+	It also uses xdt::byte_t to represent pointers on byte arrays.
 */
 class basic_bit_box {
 public:
@@ -72,53 +84,83 @@ public:
 	//! \brief Type to store size of bit_box data, or something like this
 	typedef unsigned int sz_t;
 
-	//! \brief
-	typedef byte_t bit_box_data_t;
+	//! \brief Type for type identifiers.
 	typedef unsigned int type_t;
-
-	//! \brief Item header of each bit_box data
-	#pragma pack(push, 4)
-	struct item_t {
-		sz_t sz;
-		type_t type;
-	};
-	#pragma pack(pop)
 
 	// public constants --------------------------------------------------------
 
 	//! \brief Predefined types for bit_box data
+	/*!	Only 0 is strictly reserved - it represents data type of bit_box. All
+		other identifiers are free to use. But it's a good idea not to use
+		those predefined values, because they are very common and can be
+		used by some bit_box wrappers (for example, STL like stream wrapper).
+	*/
 	enum bb_types {
-		bbt_bit_box,	//!< \brief Data is another bit_box
-		bbt_binary,		//!< \brief Data is byte array
-		bbt_int32,		//!< \brief Data is 32 bit signed integer
-		bbt_uint32,		//!< \brief Data is 32 bit unsigned integer
-		bbt_double,		//!< \brief Data is 64 bit floating point value
-		bbt_string,		//!< \brief Data is null-terminated ASCII string
-		bbt_wstring,	//!< \brief Data is null-terminated UTF-16 string
-		bbt_user = 0xFFF	//! \brief This and greater for user defined types
+		bbt_bit_box	= 0,	//!< \brief Data is another (nested) bit_box
+		bbt_binary	= 1,	//!< \brief Data is byte array
+		bbt_int32	= 2,	//!< \brief Data is 32 bit signed integer
+		bbt_uint32	= 3,	//!< \brief Data is 32 bit unsigned integer
+		bbt_double	= 4,	//!< \brief Data is 64 bit floating point value
+		bbt_string	= 5,	//!< \brief Data is null-terminated ASCII string
+		bbt_wstring	= 6,	//!< \brief Data is null-terminated UTF-16 string
+		bbt_user = 0xFFF	//!< \brief This and greater for user defined types
 	};
 
 	// public methods ----------------------------------------------------------
 
-	//! \brief Constructor
+	//!	\brief 
+	type_t type() const { return _type; }
+
+	//!	\brief 
+	sz_t sz() const { return _sz; }
+
+	//!	\brief 
+	/*!	\return Pointer on bit_box data
+	*/
+	byte_t *bits() const { return _bits; }
 
 protected:
+	// protected types ---------------------------------------------------------
+
+	//! \brief bit_box data header
+	/*!	Header has size and type of bit_box data. It's for bit_box internal
+		usage only.
+	*/
+	#pragma pack(push, 4)
+	struct _header_t {
+		sz_t sz;
+		type_t type;
+	};
+	#pragma pack(pop)
+		
 	// protected methods -------------------------------------------------------
 
 	//! \brief 
 	void _set(const byte_t *const bits) {
 	}
 
-	//! \brief Constructor
+	//! \brief
 	void _set(const byte_t *const bits, const sz_t sz) {
 		_bits	= bits;
 		_sz		= sz;
 	}
 
 private:
-	const byte_t *_bits;
+	// private data ------------------------------------------------------------
+
+	//!	\brief Type identifier of pointed data
+	type_t _type;
+
+	//! \brief Size of data pointed by basic_bit_box::_bits
 	sz_t _sz;
+
+	//! \brief Pointer on bit_box data
+	/*!	It is a pointer on raw data, without any headers or something else.
+	*/
+	const byte_t *_bits;
+
 };
+
 
 
 //! \brief Class that can iterate over bit_box data

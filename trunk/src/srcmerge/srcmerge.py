@@ -117,7 +117,6 @@ def walk_dirs(dirs):
 ################################################################################
 # main function
 def main():
-	
 
 	(options, arguments) =  opt_parser.parse_args()
 
