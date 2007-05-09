@@ -1,5 +1,5 @@
 /*******************************************************************************
-* file:         cf_wrap.h                                                      *
+* file:         handle_w.h                                                     *
 * version:      0.0.1                                                          *
 * author:       mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com           *
 * description:  wrapper class for Handle Mac OS object                         *

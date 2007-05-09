@@ -49,7 +49,7 @@ namespace xdt {
 #ifdef XDT_OS_MACOS
 
 	//! \brief Unsigned integer 8bit type for Mac OS
-	typedef UInt8	uint8
+	typedef UInt8	uint8;
 	//! \brief Unsigned integer 16bit type for Mac OS
 	typedef UInt16	uint16;
 	//! \brief Unsigned integer 32bit type for Mac OS

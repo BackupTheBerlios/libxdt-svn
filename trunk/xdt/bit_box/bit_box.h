@@ -1,13 +1,67 @@
+/*******************************************************************************
+* file:         bit_box.h                                                      *
+* version:      0.0.1                                                          *
+* author:       mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com           *
+* description:  base types declarations                                        *
+* tests:        ok                                                             *
+*******************************************************************************/
+
+#pragma once
+
+#ifndef XDT_BIT_BOX_BIT_BOX_INCLUDED
+#define XDT_BIT_BOX_BIT_BOX_INCLUDED
 
 
+/*!	\file
+	\brief bit_box is a set of classes, which can store binary data of any
+	type in solid plain byte array. With it it's very easy to save any
+	number of raw (or not raw) binary data and then restore it.
 
+	bit_box suit was originally designed to s 
+*/
+
+
+////////////////////////////////////////////////////////////////////////////////
+// headers
+
+// code configuration headers
+// none
+
+// standart C++ library headers
+// none
+
+// external libraries headers
+// none
+
+// OS specific headers
+// none
+
+// xdt headers
+#include <xdt/base/types.h>
+
+
+////////////////////////////////////////////////////////////////////////////////
+// xdt namespace
+namespace xdt {
+
+
+////////////////////////////////////////////////////////////////////////////////
+// bit_box namespace
+namespace bit_box {
+
+
+////////////////////////////////////////////////////////////////////////////////
+// basic_bit_box class declaration
 //! \brief Class contains types and constants of bit_box container. It also
 //! has some basic functionality.
 class basic_bit_box {
 public:
 	// public types ------------------------------------------------------------
 
+	//! \brief Type to store size of bit_box data, or something like this 
 	typedef unsigned int sz_t;
+
+	//! \brief
 	typedef unsigned char byte_t;
 	typedef unsigned int type_t;
 
@@ -93,3 +147,15 @@ private:
 
 class composer {
 };
+
+
+
+}	// bit_box namespace
+
+
+
+}	// xdt namespace
+
+
+
+#endif	// XDT_BIT_BOX_BIT_BOX_INCLUDED
