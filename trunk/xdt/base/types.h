@@ -46,6 +46,10 @@ namespace xdt {
 ////////////////////////////////////////////////////////////////////////////////
 // public types
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Platform specific public types
+
 #ifdef XDT_OS_MACOS
 
 	//! \brief Unsigned integer 8bit type for Mac OS
@@ -75,6 +79,16 @@ namespace xdt {
 #else 
 	#error No support for target OS
 #endif
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Platform independent public types
+
+//!	\brief Just single byte (8 bits).
+/*!	It's cool sometimes to have cpecial type for this. Byte is always byte
+	and it is good. Like free lunch :^)
+*/
+typedef uint8 byte_t;
 
 
 

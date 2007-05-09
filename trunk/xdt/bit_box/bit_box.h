@@ -17,7 +17,14 @@
 	type in solid plain byte array. With it it's very easy to save any
 	number of raw (or not raw) binary data and then restore it.
 
-	bit_box suit was originally designed to s 
+	bit_box suit was originally designed to send sets of mixed binary data
+	through a pipe-like (or socket-like) channel. It may be helpful, when
+	organizing some message driven communications.
+
+	bit_box actually is an STL compatible container. But not at all. It has two
+	types of containers:
+	- xdt::bit_box::reader with only read acces
+	- xdt::bit_box::composer with both read and write access
 */
 
 
@@ -52,21 +59,25 @@ namespace bit_box {
 
 ////////////////////////////////////////////////////////////////////////////////
 // basic_bit_box class declaration
-//! \brief Class contains types and constants of bit_box container. It also
-//! has some basic functionality.
+//! \brief Simplest unit of bit_box data. Small part of all big block.
+/*!	It's base class for all bit_box.
+
+	It knows:
+	- where it's d
+*/
 class basic_bit_box {
 public:
 	// public types ------------------------------------------------------------
 
-	//! \brief Type to store size of bit_box data, or something like this 
+	//! \brief Type to store size of bit_box data, or something like this
 	typedef unsigned int sz_t;
 
 	//! \brief
-	typedef unsigned char byte_t;
+	typedef byte_t bit_box_data_t;
 	typedef unsigned int type_t;
 
 	//! \brief Item header of each bit_box data
-	#pragma pack(push, 2)
+	#pragma pack(push, 4)
 	struct item_t {
 		sz_t sz;
 		type_t type;
