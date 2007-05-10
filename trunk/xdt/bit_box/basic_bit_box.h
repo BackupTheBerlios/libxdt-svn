@@ -162,20 +162,20 @@ public:
 	{
 	}
 
-	//!	\brief Returns type of bit_box data
-	/*! \return Type of bit_box data as type identifier
+	//!	\brief Returns pointer on bit_box data
+	/*!	\return Pointer on bit_box data
 	*/
-	type_t type() const { return _type; }
+	const byte_t *bits() const { return _bits; }
 
 	//!	\brief Returns size of bit_box data
 	/*! \return Size of bit_box data in bytes (8 bits)
 	*/
 	sz_t sz() const { return _sz; }
 
-	//!	\brief Returns pointer on bit_box data
-	/*!	\return Pointer on bit_box data
+	//!	\brief Returns type of bit_box data
+	/*! \return Type of bit_box data as type identifier
 	*/
-	const byte_t *bits() const { return _bits; }
+	type_t type() const { return _type; }
 
 protected:
 	// protected types ---------------------------------------------------------
