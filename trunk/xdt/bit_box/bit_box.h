@@ -68,7 +68,12 @@ public:
 
 	// public methods ----------------------------------------------------------
 
-	bit_box(const byte_t *const bits);
+	//!	\brief Constructor
+	/*!	\param[in] bits Pointer on bit_box data with header
+	*/
+	bit_box(const byte_t *const bits): basic_bit_box(bits)
+	{
+	}
 
 	const_iterator begin() const;
 	const_iterator end() const;
