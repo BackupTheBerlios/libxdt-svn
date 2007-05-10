@@ -54,6 +54,9 @@ namespace xdt {
 
 ////////////////////////////////////////////////////////////////////////////////
 // bit_box namespace
+//!	\brief namespace for bit_box suit
+/*! \todo detailed bit_box description
+*/
 namespace bit_box {
 
 
@@ -97,24 +100,53 @@ public:
 	*/
 	enum bb_types {
 		bbt_bit_box	= 0,	//!< \brief Data is another (nested) bit_box
-		bbt_binary	= 1,	//!< \brief Data is byte array
-		bbt_int32	= 2,	//!< \brief Data is 32 bit signed integer
-		bbt_uint32	= 3,	//!< \brief Data is 32 bit unsigned integer
-		bbt_double	= 4,	//!< \brief Data is 64 bit floating point value
-		bbt_string	= 5,	//!< \brief Data is null-terminated ASCII string
-		bbt_wstring	= 6,	//!< \brief Data is null-terminated UTF-16 string
-		bbt_user = 0xFFF	//!< \brief This and greater for user defined types
+		bbt_index	= 1		//!< \brief bit_box data index (not used now)
+		bbt_binary	= 2,	//!< \brief Data is byte array
+		bbt_int32	= 3,	//!< \brief Data is 32 bit signed integer
+		bbt_uint32	= 4,	//!< \brief Data is 32 bit unsigned integer
+		bbt_double	= 5,	//!< \brief Data is 64 bit floating point value
+		bbt_string	= 6,	//!< \brief Data is null-terminated ASCII string
+		bbt_wstring	= 7,	//!< \brief Data is null-terminated UTF-16 string
+		bbt_user	= 0xFFF	//!< \brief This and greater for user defined types
 	};
 
 	// public methods ----------------------------------------------------------
+	
+	//! \brief Constructor
+	/*!	
+	*/
+	void basic_bit_box(const byte_t *const bits) {
+		_set(bits);
+	}
 
-	//!	\brief 
+	//! \brief Constructor
+	/*!	
+	*/
+	void basic_bit_box(const byte_t *const bits, const sz_t sz,
+					   const type_t type)
+	{
+		_set(bits, sz, type);
+	}
+
+	//! \brief Copy constructor
+	/*!	
+	*/
+	void basic_bit_box(const basic_bit_box &bbb):
+		_bits(bbb._bits), _sz(bbb._sz), _type(bbb._type)
+	{
+	}
+
+	//!	\brief Returns type of bit_box data
+	/*! \return Type of bit_box data as type identifier
+	*/
 	type_t type() const { return _type; }
 
-	//!	\brief 
+	//!	\brief Returns size of bit_box data
+	/*! \return Size of bit_box data in bytes (8 bits)
+	*/
 	sz_t sz() const { return _sz; }
 
-	//!	\brief 
+	//!	\brief Returns pointer on bit_box data
 	/*!	\return Pointer on bit_box data
 	*/
 	byte_t *bits() const { return _bits; }
@@ -128,18 +160,22 @@ protected:
 	*/
 	#pragma pack(push, 4)
 	struct _header_t {
-		sz_t sz;
-		type_t type;
+		sz_t sz;		//!< \brief Size of bit_box data
+		type_t type;	//!< \brief Type of bit_box data
 	};
 	#pragma pack(pop)
 		
 	// protected methods -------------------------------------------------------
 
 	//! \brief 
+	/*!	
+	*/
 	void _set(const byte_t *const bits) {
 	}
 
 	//! \brief
+	/*!	
+	*/
 	void _set(const byte_t *const bits, const sz_t sz) {
 		_bits	= bits;
 		_sz		= sz;
