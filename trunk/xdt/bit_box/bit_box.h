@@ -60,10 +60,26 @@ class bit_box: public basic_bit_box
 {
 public:
 	// public types ------------------------------------------------------------
+	class const_iterator: public basic_bit_box
+	{
+	public:
+		bool operator ==(const_iterator &i2);
+	};
+
 	// public methods ----------------------------------------------------------
+
+	bit_box(const byte_t *const bits);
+
+	const_iterator begin() const;
+	const_iterator end() const;
 
 protected:
 	// protected types ---------------------------------------------------------
+	class _basic_iterator: public basic_bit_box
+	{
+		bool operator ==(const_iterator &i2);
+	};
+
 	// protected methods -------------------------------------------------------
 
 private:

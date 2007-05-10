@@ -84,6 +84,11 @@ namespace bit_box
 	- basic_bit_box::type_t for type identifiers
 
 	It also uses xdt::byte_t to represent pointers on byte arrays.
+
+	\attention Note, that basic_bit_box is constant (non volitile) storage -
+	it forbids changing of owned data. So, you can only read from bit_box
+	data block. If you want to write some data, you will need to write enire
+	bit_box data block.
 */
 class basic_bit_box
 {
