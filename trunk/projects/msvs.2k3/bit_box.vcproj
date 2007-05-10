@@ -106,6 +106,9 @@
 			<File
 				RelativePath="..\..\xdt\bit_box\basic_bit_box.h">
 			</File>
+			<File
+				RelativePath="..\..\xdt\bit_box\bit_box.h">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
