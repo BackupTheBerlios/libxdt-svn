@@ -122,10 +122,8 @@ public:
 	//! \brief Constructor
 	/*!	
 	*/
-	void basic_bit_box(const byte_t *const bits, const sz_t sz,
-					   const type_t type)
-	{
-		_set(bits, sz, type);
+	void basic_bit_box(const byte_t *const bits, const sz_t sz) {
+		_set(bits, sz);
 	}
 
 	//! \brief Copy constructor
@@ -164,36 +162,46 @@ protected:
 		type_t type;	//!< \brief Type of bit_box data
 	};
 	#pragma pack(pop)
-		
+
 	// protected methods -------------------------------------------------------
 
 	//! \brief 
 	/*!	
 	*/
 	void _set(const byte_t *const bits) {
+		const _header_t *const header = (_header_t *)bits;
+
+		_set(bits + sizeof(_header_t),
+			 header->sz,
+			 header->type
+		);
 	}
 
 	//! \brief
 	/*!	
 	*/
-	void _set(const byte_t *const bits, const sz_t sz) {
+	void _set(const byte_t *const bits, const sz_t sz,
+			  const type_t type = bbt_bit_box)
+	{
 		_bits	= bits;
 		_sz		= sz;
+		_type	= type;
 	}
 
 private:
 	// private data ------------------------------------------------------------
 
-	//!	\brief Type identifier of pointed data
-	type_t _type;
-
-	//! \brief Size of data pointed by basic_bit_box::_bits
-	sz_t _sz;
-
 	//! \brief Pointer on bit_box data
 	/*!	It is a pointer on raw data, without any headers or something else.
 	*/
 	const byte_t *_bits;
+
+	//! \brief Size of data pointed by basic_bit_box::_bits
+	sz_t _sz;
+
+	//!	\brief Type identifier of pointed data
+	type_t _type;
+
 
 };
 
