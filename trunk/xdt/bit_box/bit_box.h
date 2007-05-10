@@ -32,7 +32,7 @@
 // headers
 
 // code configuration headers
-// none
+#include <assert.h>
 
 // standart C++ library headers
 // none
@@ -49,7 +49,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // xdt namespace
-namespace xdt {
+namespace xdt
+{
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +58,8 @@ namespace xdt {
 //!	\brief namespace for bit_box suit
 /*! \todo detailed bit_box description
 */
-namespace bit_box {
+namespace bit_box
+{
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +82,8 @@ namespace bit_box {
 
 	It also uses xdt::byte_t to represent pointers on byte arrays.
 */
-class basic_bit_box {
+class basic_bit_box
+{
 public:
 	// public types ------------------------------------------------------------
 
@@ -98,9 +101,10 @@ public:
 		those predefined values, because they are very common and can be
 		used by some bit_box wrappers (for example, STL like stream wrapper).
 	*/
-	enum bb_types {
+	enum bb_types
+	{
 		bbt_bit_box	= 0,	//!< \brief Data is another (nested) bit_box
-		bbt_index	= 1		//!< \brief bit_box data index (not used now)
+		bbt_index	= 1,	//!< \brief bit_box data index (not used now)
 		bbt_binary	= 2,	//!< \brief Data is byte array
 		bbt_int32	= 3,	//!< \brief Data is 32 bit signed integer
 		bbt_uint32	= 4,	//!< \brief Data is 32 bit unsigned integer
@@ -113,23 +117,39 @@ public:
 	// public methods ----------------------------------------------------------
 	
 	//! \brief Constructor
-	/*!	
+	/*!	\param[in] bits Pointer on bit_box data with header information
+
+		\attention It's very important, that header must precedes real
+		bit_box data.
+
+		This constructor extracts from bit_box header size and type of data.
 	*/
-	void basic_bit_box(const byte_t *const bits) {
+	basic_bit_box(const byte_t *const bits)
+	{
 		_set(bits);
 	}
 
 	//! \brief Constructor
-	/*!	
+	/*!	\param[in] bits Pointer on raw bit_box data
+		\param[in] sz Size of bit_box data pointed by \c bits
+
+		This constructor sets \c type to basic_bit_box::bbt_bit_box, so
+		use it only with data that is another bit_box.
 	*/
-	void basic_bit_box(const byte_t *const bits, const sz_t sz) {
+	basic_bit_box(const byte_t *const bits, const sz_t sz)
+	{
 		_set(bits, sz);
 	}
 
 	//! \brief Copy constructor
-	/*!	
+	/*!	\param[in] bbb Source basic_bit_box to copy from. Nothing tricky,
+		just copy as is.
+
+		\attention This copy constructor copies only pointers, not their data.
+		basic_bit_box does no any memory allocation in every its part.
+		Remember it :^)
 	*/
-	void basic_bit_box(const basic_bit_box &bbb):
+	basic_bit_box(const basic_bit_box &bbb):
 		_bits(bbb._bits), _sz(bbb._sz), _type(bbb._type)
 	{
 	}
@@ -147,7 +167,7 @@ public:
 	//!	\brief Returns pointer on bit_box data
 	/*!	\return Pointer on bit_box data
 	*/
-	byte_t *bits() const { return _bits; }
+	const byte_t *bits() const { return _bits; }
 
 protected:
 	// protected types ---------------------------------------------------------
@@ -157,7 +177,8 @@ protected:
 		usage only.
 	*/
 	#pragma pack(push, 4)
-	struct _header_t {
+	struct _header_t
+	{
 		sz_t sz;		//!< \brief Size of bit_box data
 		type_t type;	//!< \brief Type of bit_box data
 	};
@@ -165,24 +186,39 @@ protected:
 
 	// protected methods -------------------------------------------------------
 
-	//! \brief 
-	/*!	
+	//! \brief Extracts data information from header and sets it
+	/*!	\param[in] bits Pointer on bit_box data with header information
+
+		This function knows about headers. It will be pretty cool, if it will
+		stay the only function, that knows about them.
+
+		\attention Function extracts size and type of bit_box data using header
+		information. Try to make your best not to fool it by passing invalid
+		pointer - consequences will be unpredictable :^)
 	*/
-	void _set(const byte_t *const bits) {
+	void _set(const byte_t *const bits)
+	{
+		assert(0 != bits);
+
 		const _header_t *const header = (_header_t *)bits;
 
-		_set(bits + sizeof(_header_t),
-			 header->sz,
-			 header->type
-		);
+		_set(bits + sizeof(_header_t), header->sz, header->type);
 	}
 
-	//! \brief
-	/*!	
+	//! \brief Sets internal data information
+	/*!	\param[in] bits Pointer on bit_box data. Raw real data, without any
+		headers.
+		\param[in] sz Size of data in bytes
+		\param[in] type Type of data. Any identifier or one of predefined in
+		basic_bit_box::bb_types.
+		This function is the only direct way to set internal data
+		information. It does no any error checks.
 	*/
 	void _set(const byte_t *const bits, const sz_t sz,
 			  const type_t type = bbt_bit_box)
 	{
+		assert(0 != bits);
+
 		_bits	= bits;
 		_sz		= sz;
 		_type	= type;
@@ -202,47 +238,6 @@ private:
 	//!	\brief Type identifier of pointed data
 	type_t _type;
 
-
-};
-
-
-
-//! \brief Class that can iterate over bit_box data
-class reader: public basic_bit_box {
-public:
-	// public types ------------------------------------------------------------
-
-	//! \brief Constant iterator over bit_box data
-	class const_iterator {
-	};
-
-	// public methods ----------------------------------------------------------
-
-	//! \brief Copy constructor
-	/*!	Copy constructor of reader class does not copies any memory, just bits
-		pointer and size value.
-	*/
-	reader(const reader &r);
-
-	//! \brief Constructor
-	/*!	Takes bits like it is bit_box item, so size can be taken from bit_box
-		item header. Type in header must be basic_bit_box::bbt_bit_box. Class
-		remembers just size and pointer to data itself, not on entire item.
-	*/
-	reader(const byte_t *const bits);
-
-	//! \brief Constructor
-	/*! 
-	*/
-	reader(const byte_t *const bits, const sz_t sz);
-
-protected:
-private:
-
-};
-
-
-class composer {
 };
 
 
