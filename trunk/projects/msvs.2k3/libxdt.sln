@@ -1,8 +1,26 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base", "base.vcproj", "{61D78194-4EFC-4E69-9907-643C0B8BB322}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit_box", "bit_box.vcproj", "{CE9DD13C-7C57-4759-873A-41037DBC7805}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
+		{61D78194-4EFC-4E69-9907-643C0B8BB322}.Debug.ActiveCfg = Debug|Win32
+		{61D78194-4EFC-4E69-9907-643C0B8BB322}.Debug.Build.0 = Debug|Win32
+		{61D78194-4EFC-4E69-9907-643C0B8BB322}.Release.ActiveCfg = Release|Win32
+		{61D78194-4EFC-4E69-9907-643C0B8BB322}.Release.Build.0 = Release|Win32
+		{CE9DD13C-7C57-4759-873A-41037DBC7805}.Debug.ActiveCfg = Debug|Win32
+		{CE9DD13C-7C57-4759-873A-41037DBC7805}.Debug.Build.0 = Debug|Win32
+		{CE9DD13C-7C57-4759-873A-41037DBC7805}.Release.ActiveCfg = Release|Win32
+		{CE9DD13C-7C57-4759-873A-41037DBC7805}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
