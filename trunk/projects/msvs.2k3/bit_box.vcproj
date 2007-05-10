@@ -104,7 +104,7 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="..\..\xdt\bit_box\bit_box.h">
+				RelativePath="..\..\xdt\bit_box\basic_bit_box.h">
 			</File>
 		</Filter>
 	</Files>

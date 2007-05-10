@@ -1,5 +1,5 @@
 /*******************************************************************************
-* file:         bit_box.h                                                      *
+* file:         basic_bit_box.h                                                *
 * version:      0.0.1                                                          *
 * author:       mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com           *
 * description:  base types declarations                                        *
@@ -8,23 +8,13 @@
 
 #pragma once
 
-#ifndef XDT_BIT_BOX_BIT_BOX_INCLUDED
-#define XDT_BIT_BOX_BIT_BOX_INCLUDED
+#ifndef XDT_BIT_BOX_BASIC_BIT_BOX_INCLUDED
+#define XDT_BIT_BOX_BASIC_BIT_BOX_INCLUDED
 
 
-/*!	\file
-	\brief bit_box is a set of classes, which can store binary data of any
-	type in solid plain byte array. With it it's very easy to save any
-	number of raw (or not raw) binary data and then restore it.
+/*!	\file Declarations and difinitions of xdt::bit_box::basic_bit_box class
 
-	bit_box suit was originally designed to send sets of mixed binary data
-	through a pipe-like (or socket-like) channel. It may be helpful, when
-	organizing some message driven communications.
-
-	bit_box actually is an STL compatible container. But not at all. It has two
-	types of containers:
-	- xdt::bit_box::reader with only read acces
-	- xdt::bit_box::composer with both read and write access
+	\todo Add detailed comment for basic_bit_box.h file
 */
 
 
@@ -56,7 +46,18 @@ namespace xdt
 ////////////////////////////////////////////////////////////////////////////////
 // bit_box namespace
 //!	\brief namespace for bit_box suit
-/*! \todo detailed bit_box description
+/*! bit_box is a set of classes, which can store binary data of any
+	type in solid plain byte array. With it it's very easy to save any
+	number of raw (or not raw) binary data and then restore it.
+
+	bit_box suit was originally designed to send sets of mixed binary data
+	through a pipe-like (or socket-like) channel. It may be helpful, when
+	organizing some message driven communications.
+
+	bit_box actually is an STL compatible container. But not at all. It has two
+	types of containers:
+	- xdt::bit_box::reader with only read acces
+	- xdt::bit_box::composer with both read and write access
 */
 namespace bit_box
 {
@@ -250,4 +251,4 @@ private:
 
 
 
-#endif	// XDT_BIT_BOX_BIT_BOX_INCLUDED
+#endif	// XDT_BIT_BOX_BASIC_BIT_BOX_INCLUDED
