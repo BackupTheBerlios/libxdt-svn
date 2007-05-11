@@ -1,10 +1,10 @@
-/*******************************************************************************
-* file:         types.h                                                        *
-* version:      0.0.1                                                          *
-* author:       mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com           *
-* description:  base types declarations                                        *
-* tests:        ok                                                             *
-*******************************************************************************/
+/*!	\file     types.h
+	\version  0.0.1
+	\author   mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com
+	\brief    Declarations of small simple types
+
+	\todo     Add detailed comment for types.h file
+*/
 
 #pragma once
 

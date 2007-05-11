@@ -1,24 +1,15 @@
-/*******************************************************************************
-* file:         basic_bit_box.h                                                *
-* version:      0.0.1                                                          *
-* author:       mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com           *
-* description:  declarations and definitions of basic_bit_box class            *
-* tests:        ok                                                             *
-*******************************************************************************/
+/*!	\file     basic_bit_box.h
+	\version  0.0.1
+	\author   mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com
+	\brief    Declarations and difinitions of xdt::bit_box::basic_bit_box class
+
+	\todo     Add detailed comment for basic_bit_box.h file
+*/
 
 #pragma once
 
 #ifndef XDT_BIT_BOX_BASIC_BIT_BOX_INCLUDED
 #define XDT_BIT_BOX_BASIC_BIT_BOX_INCLUDED
-
-
-/*!	\file
-
-	\brief Declarations and difinitions of xdt::bit_box::basic_bit_box class
-
-	\todo Add detailed comment for basic_bit_box.h file
-*/
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // headers

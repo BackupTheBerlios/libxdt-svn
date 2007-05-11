@@ -1,10 +1,10 @@
-/*******************************************************************************
-* file:         ostype.h                                                       *
-* version:      0.0.1                                                          *
-* author:       mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com           *
-* description:  defines specific for OS                                        *
-* tests:        ok                                                             *
-*******************************************************************************/
+/*!	\file     ostype.h
+	\version  0.0.1
+	\author   mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com
+	\brief    OS specific defines
+
+	\todo     Add detailed comment for ostype.h file
+*/
 
 #pragma once
 
