@@ -44,7 +44,8 @@ namespace bit_box
 
 ////////////////////////////////////////////////////////////////////////////////
 // bit_box class declaration
-//! \brief
+//! \brief Elementary bit_box container that can read and iterate throw
+//!	bit_box data.
 /*!	
 */
 template <class data_type>
@@ -52,10 +53,31 @@ class bit_box: public basic_bit_box<data_type>
 {
 public:
 	// public types ------------------------------------------------------------
-	class const_iterator: public basic_bit_box
+
+	//!	\brief 
+	/*!	
+	*/
+	class iterator: public basic_bit_box<data_type>
 	{
 	public:
-		bool operator ==(const_iterator &i2);
+		// public methods ------------------------------------------------------
+
+		//! \brief Constructor
+		/*!	
+		*/
+		iterator(data_type *const bits): basic_bit_box<data_type>(bits)
+		{
+		}
+
+		template <class t>
+		iterator(typename const bit_box<t>::iterator &i):
+			basic_bit_box<data_type>(i)
+		{
+		}
+
+		bool operator ==(const iterator &b) {
+			return (b.bits() == b.bits());
+		}
 	};
 
 	// public methods ----------------------------------------------------------
@@ -63,19 +85,19 @@ public:
 	//!	\brief Constructor
 	/*!	\param[in] bits Pointer on bit_box data with header
 	*/
-	bit_box(const byte_t *const bits): basic_bit_box(bits)
+	bit_box(byte_t *const bits): basic_bit_box<data_type>(bits)
 	{
 	}
 
-	const_iterator begin() const;
-	const_iterator end() const;
+	iterator begin() const
+	{
+		return iterator(bits());
+
+	}
+
+	iterator end() const;
 
 protected:
-	// protected types ---------------------------------------------------------
-	class _basic_iterator: public basic_bit_box
-	{
-		bool operator ==(const_iterator &i2);
-	};
 
 	// protected methods -------------------------------------------------------
 
