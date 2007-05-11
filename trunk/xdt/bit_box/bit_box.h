@@ -54,7 +54,7 @@ class bit_box: public basic_bit_box<data_type>
 public:
 	// public types ------------------------------------------------------------
 
-	//!	\brief 
+	//!	\brief Iterator over bit_box data blocks
 	/*!	
 	*/
 	class iterator: public basic_bit_box<data_type>
@@ -69,12 +69,17 @@ public:
 		{
 		}
 
+		//!	\brief Copy constructor
+		/*!
+		*/
 		template <class t>
-		iterator(typename const bit_box<t>::iterator &i):
-			basic_bit_box<data_type>(i)
+		iterator(const basic_bit_box<t> &i): basic_bit_box<data_type>(i)
 		{
 		}
 
+		basic_bit_box<data_type> *operator->() { return this; }
+
+		//! \brief 
 		bool operator ==(const iterator &b) {
 			return (b.bits() == b.bits());
 		}
