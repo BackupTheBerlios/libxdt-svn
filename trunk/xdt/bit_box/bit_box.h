@@ -47,7 +47,8 @@ namespace bit_box
 //! \brief
 /*!	
 */
-class bit_box: public basic_bit_box
+template <class data_type>
+class bit_box: public basic_bit_box<data_type>
 {
 public:
 	// public types ------------------------------------------------------------
@@ -82,6 +83,14 @@ private:
 	// private data ------------------------------------------------------------
 
 };
+
+template <class data_type>
+class composer: public bit_box<data_type>
+{
+};
+
+typedef bit_box<const byte_t> reader;
+typedef composer<const byte_t> writer;
 
 
 

@@ -1,9 +1,10 @@
-/*!	\file     basic_bit_box.h
-	\version  0.0.1
-	\author   mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com
-	\brief    Declarations and difinitions of xdt::bit_box::basic_bit_box class
+/*!	\file		basic_bit_box.h
+	\version	0.0.1
+	\author		mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com
+	\brief		Declarations and difinitions of xdt::bit_box::basic_bit_box
+				template class
 
-	\todo     Add detailed comment for basic_bit_box.h file
+	\todo		Add detailed comment for basic_bit_box.h file
 */
 
 #pragma once
@@ -47,8 +48,8 @@ namespace xdt
 	through a pipe-like (or socket-like) channel. It may be helpful, when
 	organizing some message driven communications.
 
-	bit_box actually is an STL compatible container. But not at all. It has two
-	types of containers:
+	bit_box is mostly like an STL compatible container. But not at all. It
+	has two types of containers:
 	- xdt::bit_box::reader with only read acces
 	- xdt::bit_box::composer with both read and write access
 */
@@ -74,17 +75,20 @@ namespace bit_box
 	- basic_bit_box::sz_t to represent some size or length
 	- basic_bit_box::type_t for type identifiers
 
-	It also uses xdt::byte_t to represent pointers on byte arrays.
+	It also uses basic_bit_box::data_t to represent pointers on byte arrays.
 
-	\attention Note, that basic_bit_box is constant (non volitile) storage -
-	it forbids changing of owned data. So, you can only read from bit_box
-	data block. If you want to write some data, you will need to write enire
-	bit_box data block.
+	\note The only reason, that basic_bit_box is template class, is to allow
+	both constant and non-constant data pointers. Try not use that feature in
+	other ways.
 */
+template <class data_type>
 class basic_bit_box
 {
 public:
 	// public types ------------------------------------------------------------
+
+	//! \brief Alias for template parameter \c data_type
+	typedef data_type data_t;
 
 	//! \brief Type to store size of bit_box data, or something like this
 	typedef unsigned int sz_t;
@@ -123,7 +127,7 @@ public:
 
 		This constructor extracts from bit_box header size and type of data.
 	*/
-	basic_bit_box(const byte_t *const bits)
+	basic_bit_box(data_type *const bits)
 	{
 		_set(bits);
 	}
@@ -135,9 +139,9 @@ public:
 		This constructor sets \c type to basic_bit_box::bbt_bit_box, so
 		use it only with data that is another bit_box.
 	*/
-	basic_bit_box(const byte_t *const bits, const sz_t sz)
+	basic_bit_box(data_type *const bits, const sz_t sz)
 	{
-		_set(bits, sz);
+		_set(bits, sz, bbt_bit_box);
 	}
 
 	//! \brief Copy constructor
@@ -147,21 +151,35 @@ public:
 		\attention This copy constructor copies only pointers, not their data.
 		basic_bit_box does no any memory allocation in every its part.
 		Remember it :^)
+
+		\attention You can't assign basic_bit_box with \c data_type, for
+		example, \c const \c xdt::byte to basic_bit_box with \c data_type
+		\c xdt::byte. In first case we have pointer on constant data. In
+		second - pointer on volatile data. So, if you will get a compilation
+		error here - check your code once again on such mistakes.
 	*/
-	basic_bit_box(const basic_bit_box &bbb):
-		_bits(bbb._bits), _sz(bbb._sz), _type(bbb._type)
+	template <class t>
+	basic_bit_box(const basic_bit_box<t> &bbb):
+		_bits(reinterpret_cast<t *>(bbb.bits())),
+		_sz(bbb.sz()), _type(bbb.type())
 	{
 	}
 
 	//!	\brief Returns pointer on bit_box data
 	/*!	\return Pointer on bit_box data
 	*/
-	const byte_t *bits() const { return _bits; }
+	data_type *bits() const { return _bits; }
 
 	//!	\brief Returns size of bit_box data
 	/*! \return Size of bit_box data in bytes (8 bits)
 	*/
 	sz_t sz() const { return _sz; }
+
+	//!	\brief Return count of "data types" in owned data block
+	/*!	\return Size in bytes (basic_bit_box::sz()) devided on size of
+		template parameter type (\c data_type).
+	*/
+	sz_t units() const { return (_sz / sizeof(data_type)); }
 
 	//!	\brief Returns type of bit_box data
 	/*! \return Type of bit_box data as type identifier
@@ -195,13 +213,14 @@ protected:
 		information. Try to make your best not to fool it by passing invalid
 		pointer - consequences will be unpredictable :^)
 	*/
-	void _set(const byte_t *const bits)
+	void _set(data_type *const bits)
 	{
 		assert(0 != bits);
 
 		const _header_t *const header = (_header_t *)bits;
 
-		_set(bits + sizeof(_header_t), header->sz, header->type);
+		_set(reinterpret_cast<data_type *const>(bits) + sizeof(_header_t),
+			 header->sz, header->type);
 	}
 
 	//! \brief Sets internal data information
@@ -213,7 +232,7 @@ protected:
 		This function is the only direct way to set internal data
 		information. It does no any error checks.
 	*/
-	void _set(const byte_t *const bits, const sz_t sz,
+	void _set(data_type *const bits, const sz_t sz,
 			  const type_t type = bbt_bit_box)
 	{
 		assert(0 != bits);
@@ -229,7 +248,7 @@ private:
 	//! \brief Pointer on bit_box data
 	/*!	It is a pointer on raw data, without any headers or something else.
 	*/
-	const byte_t *_bits;
+	data_type *_bits;
 
 	//! \brief Size of data pointed by basic_bit_box::_bits
 	sz_t _sz;
