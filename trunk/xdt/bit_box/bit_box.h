@@ -18,7 +18,7 @@
 #include <assert.h>
 
 // standart C++ library headers
-// none
+#include <iterator>
 
 // external libraries headers
 // none
@@ -57,9 +57,18 @@ public:
 	//!	\brief Iterator over bit_box data blocks
 	/*!	
 	*/
-	class iterator: public basic_bit_box<data_type>
+	class iterator
 	{
 	public:
+		// public types --------------------------------------------------------
+
+		//! \brief Type of iterator category
+		/*!	bit_box in its base variant can iterate only forward.
+		*/
+		typedef std::forward_iterator_tag iterator_category;
+
+		typedef basic_bit_box<data_type> value_type
+
 		// public methods ------------------------------------------------------
 
 		//! \brief Constructor
@@ -79,10 +88,20 @@ public:
 
 		basic_bit_box<data_type> *operator->() { return this; }
 
+		basic_bit_box<data_type> &operator *() { return (*this); }
+
 		//! \brief 
 		bool operator ==(const iterator &b) {
 			return (b.bits() == b.bits());
 		}
+	private:
+		// private data --------------------------------------------------------
+
+		//!	\brief Internal bit_box data
+		/*!	This bit_box is a current value of iterator
+		*/
+		basic_bit_box<data_type> _bb;
+
 	};
 
 	// public methods ----------------------------------------------------------
