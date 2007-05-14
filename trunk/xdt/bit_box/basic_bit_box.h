@@ -28,7 +28,7 @@
 // none
 
 // xdt headers
-#include <xdt/base/types.h>
+// none
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -114,9 +114,6 @@ public:
 
 	// public constants --------------------------------------------------------
 
-	//!	\name Constructors and destructors
-	//@{
-
 	//! \brief Predefined types for bit_box data
 	/*!	Only 0 is strictly reserved - it represents data type of bit_box. All
 		other identifiers are free to use. But it's a good idea not to use
@@ -137,6 +134,9 @@ public:
 	};
 
 	// public methods ----------------------------------------------------------
+
+	//!	\name Constructors and destructors
+	//@{
 	
 	//! \brief Constructor
 	/*!	\param[in] bits Pointer on bit_box data with header information
@@ -223,6 +223,46 @@ protected:
 	};
 	#pragma pack(pop)
 
+	//! \brief Transplants <i>const</i> modifier from one type to another.
+	//!	Baseline declaration for non-constant types.
+	/*!	This helper class is useful when you need to transplant
+		<i>const modifier</i> from one type to another. It means, that second
+		type (destination) will have <i>const</i> modifier only if first
+		(source) has it. For example:
+		\code
+		// this type will NOT have <i>const</i> modifier
+		typedef _const_transplant<char, int>::t non_const_int;
+		// this type will have <i>const</i> modifier
+		typedef _const_transplant<const char, int>::t const_int;
+		\endcode
+
+		\todo Possibly, it's a good idea to place all classes like this
+		in separate sub-library. For example, in
+		<tt>xdt/tricks/const_transplantator.h</tt>.
+	*/
+	template <class src, class dest>
+	struct _const_transplant {
+		//! \brief Resulting type
+		typedef dest t;
+	};
+
+	//! \brief Transplants <i>const</i> modifier from one type to another.
+	//!	Specialization for constant types.
+	/*!	\sa _const_transplant
+	*/
+	template <class src, class dest>
+	struct _const_transplant<const src, dest> {
+		//! \brief Resulting type
+		typedef const dest t;
+	};
+
+	//! \brief Alias for header type with proper <i>const</i> modifier
+	/*!	I think it's not a good idea to widely use this type. It's part of
+		header information and it's good to keep is protected as long as
+		possible.
+	*/
+	typedef typename _const_transplant<bits_type, _header_t>::t _header_type;
+
 	// protected methods -------------------------------------------------------
 
 	//! \brief Extracts data information from header and sets it
@@ -239,21 +279,17 @@ protected:
 	{
 		assert(0 != bits);
 
-		const _header_t *const header = (_header_t *)bits;
+		_header_type *header = (_header_type *)bits;
 
-		_set(reinterpret_cast<byte_type<bits_type>::result>(bits) + sizeof(_header_t),
-			 header->sz, header->type);
-		/*
-		_set(reinterpret_cast<xdt::byte_t *>(bits) + sizeof(_header_t),
-			 header->sz, header->type);
-		*/
+		_set(reinterpret_cast<bits_type *>(header + 1),
+			 header->sz, header->type_id);
 	}
 
 	//! \brief Sets internal data information
 	/*!	\param[in] bits Pointer on bit_box data. Raw real data, without any
 		headers.
 		\param[in] sz Size of data in bytes
-		\param[in] type Type of data. Any identifier or one of predefined in
+		\param[in] type_id Type of data. Any identifier or one of predefined in
 		basic_bit_box::bb_types.
 		This function is the only direct way to set internal data
 		information. It does no any error checks.

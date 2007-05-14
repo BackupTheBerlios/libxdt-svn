@@ -14,7 +14,16 @@ int main() {
 	citer_t i3(i2);
 	*/
 
-	xdt::bit_box::basic_bit_box<xdt::byte_t> bbb(0);
+	xdt::bit_box::basic_bit_box<char> bb1(0);
+	xdt::bit_box::basic_bit_box<const char> bb2(0);
+
+	xdt::bit_box::basic_bit_box<char> bb3(0, 1);
+	xdt::bit_box::basic_bit_box<const char> bb4(0, 1);
+
+	xdt::bit_box::basic_bit_box<char> bb5(bb1);
+	xdt::bit_box::basic_bit_box<const char> bb6(bb1);
+	//xdt::bit_box::basic_bit_box<char> bb7(bb2);
+	xdt::bit_box::basic_bit_box<const char> bb8(bb2);
 	/*
 	xdt::bit_box::bit_box<xdt::byte_t> bb(0);
 	xdt::bit_box::bit_box<xdt::byte_t>::iterator i(0);
