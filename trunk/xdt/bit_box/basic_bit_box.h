@@ -1,8 +1,10 @@
 /*!	\file		basic_bit_box.h
 	\version	0.0.1
 	\author		mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com
-	\brief		Declarations and difinitions of xdt::bit_box::basic_bit_box
+	\brief		Declarations and difinitions for xdt::bit_box::basic_bit_box
 				template class
+
+	\sa xdt::bit_box, xdt::bit_box::basic_bit_box
 
 	\todo		Add detailed comment for basic_bit_box.h file
 */
@@ -39,19 +41,24 @@ namespace xdt
 
 ////////////////////////////////////////////////////////////////////////////////
 // bit_box namespace
-//!	\brief namespace for bit_box suit
-/*! bit_box is a set of classes, which can store binary data of any
+//!	\brief namespace for <i>%bit_box</i> suit
+/*! <i>%bit_box</i> is a set of classes, which can store binary data of any
 	type in solid plain byte array. With it it's very easy to save any
 	number of raw (or not raw) binary data and then restore it.
 
-	bit_box suit was originally designed to send sets of mixed binary data
-	through a pipe-like (or socket-like) channel. It may be helpful, when
+	<i>%bit_box</i> suit was originally designed to send sets of mixed binary
+	data through a pipe-like (or socket-like) channel. It may be helpful, when
 	organizing some message driven communications.
 
-	bit_box is mostly like an STL compatible container. But not at all. It
-	has two types of containers:
+	<i>%bit_box</i> is much like an STL compatible container. But not at all.
+	It has different classes for reading and writing (something like STL
+	streams):
 	- xdt::bit_box::reader with only read acces
 	- xdt::bit_box::writer with both read and write access
+
+	So, you have to choose between them, because <i>%writer</i> works only
+	with internal storage by allocating memory for it and can't attach to
+	external storage.
 */
 namespace bit_box
 {
@@ -59,38 +66,59 @@ namespace bit_box
 
 ////////////////////////////////////////////////////////////////////////////////
 // basic_bit_box class declaration
-//! \brief Simplest unit of bit_box data. Also base class for all bit_box.
-/*!	It knows:
-	- Where its data is. Every basic_bit_box has pointer on its data,
-	  called "bits".
-	- Size of this data.
-	- Type identifier of this data.
+//! \brief Simplest unit of <i>%bit_box</i> data. Also base class for almost
+//!	all <i>%bit_box</i> suit.
+/*!	<b>%basic_bit_box</b> is called basic because it is really basic :^) But
+	it is powerful enough to be a base class to almost all <i>%bit_box</i>
+	suit. Any <i>%basic_bit_box</i> holds information about:
+	- Its data. Every <i>%basic_bit_box</i> has pointer on its data,
+	  called <i>"bits"</i>.
+	- Size of this data (in bytes).
+	- Type identifier for this data, wich tells what kind of stuff it have. 
 
-	Some words about types. bit_box works with raw bytes, it has no idea with
-	what really data it operates. bit_box type is just a number, only 0 is
-	reserved to represent another (nested) bit_box. It's up to class user
-	to decide, what type some data has. Also, bit_box has some predefined
-	types, and it's good idea for custom types not to overlap with them.
+	Some words about magic type identifiers. <i>%basic_bit_box</i> works with
+	raw bytes, it has no idea with what really data it operates.
+	<i>%bit_box</i> data type identifier is just a number. It's up to class
+	user to decide, what type some data has. Only 0 (zero) is reserved to
+	represent another (nested) <i>%bit_box</i>. Also, <i>%basic_bit_box</i>
+	has some predefined type identifiers, and it's good idea for custom
+	types not to overlap with them.
 
-	basic_bit_box defines some types, to unify it's usage:
+	To unify it's usage <i>%basic_bit_box</i> defines some types, in STL
+	compatible manner:
 	- basic_bit_box::size_type to represent some size or length. Note, that
-	  in terms of bit_box \c size is size in bytes of associated data. So, we
-	  will call it \c sz to prevent confusion with STL containers \c size,
-	  wich is count of elements.
+	  in terms of <i>%bit_box</i> <i>size</i> is size in bytes of associated
+	  data. So, we will call it <i>sz</i> to prevent confusion with STL
+	  containers <i>size</i> wich is count of elements.
 	- basic_bit_box::bits_type to represent type of pointers, used by
-	  basic_bit_box. Note, that actual pointers type will be
-	  (basic_bit_box::bits_type *). Star (*) added automatically to deny
-	  pointers, that are actually non-pointers. It required by
-	  basic_bit_box, that sizeof(basic_bit_box::bits_type) must be equal
-	  to sizeof(xdt::byte_t).
-	- basic_bit_box::type_id_type for type identifiers
+	  <i>%basic_bit_box</i>. Note, that actual pointers type will be
+	  (<i>%basic_bit_box::bits_type *</i>). Star (<i>*</i>) added
+	  automatically to guarantee that pointers are really of some pointer type.
+	- basic_bit_box::type_id_type for type identifiers. Just unsigned integer.
 
-	It also uses basic_bit_box::data_type to represent pointers on byte
-	arrays.
+	<i>%basic_bit_box</i> has one important feature - it knows internals of
+	<i>%bit_box</i> data format. So, it is possible to extract data type
+	identifier, data size and data itself from <i>%bit_box</i> data memory
+	block.
 
-	\note The only reason, that basic_bit_box is template class, is to allow
-	both constant and non-constant data pointers. Try not use that feature in
-	other ways.
+	Class has no error checking built-in (we want to make it as fast as
+	possible), so if you get data from noisy and lossy channel - use something
+	like CRC to prevent destructive consequences. You are responsible to give
+	pointers on valid memory blocks with valid <i>%bit_box</i> headers.
+
+	\note The only reason, that <i>%basic_bit_box</i> is a template class,
+	is to allow both constant and non-constant data pointers. Try not to use
+	this feature in other ways (however, it correctly handles any type of
+	template parameter).
+
+	<i>%basic_bit_box</i> is not very useful by itself. However here is a small
+	example to simplify understanding of this class:
+	\code
+	//TODO: some example
+	xdt::bit_box::basic_bit_box<char> bb(0);
+	\endcode
+
+	\todo basic_bit_box needs some example code
 */
 template <class bits_t>
 class basic_bit_box
@@ -98,27 +126,35 @@ class basic_bit_box
 public:
 	// public types ------------------------------------------------------------
 
-	//! \brief Alias for template parameter \c bits_t
-	/*!	Represents type of pointers to use for bit_box bits.
+	//! \brief Alias for template parameter <i>bits_t</i>
+	/*!	Represents type, on wich <i>%basic_bit_box</i> pointers will point.
+		It's not a real pointer type, because you always can add star
+		(<i>*</i>) to any type and get pointer type. But it is difficult
+		to remove star from type (to dereference a type) without any tricks.
 	*/
 	typedef bits_t bits_type;
 
-	//! \brief Type to store size of bit_box data, or something like this.
+	//! \brief Type to store size of <i>%bit_box</i> data, or something like
+	//!	this.
 	typedef unsigned int size_type;
 
-	//! \brief Type for type identifiers.
+	//! \brief Type for type identifiers. Just unsigned integer.
 	typedef unsigned int type_id_type;
 
-	//!	\brief Type of this parameterized basic_bit_box
+	//!	\brief Type of this <i>%basic_bit_box</i>
+	/*!	It's very useful to have such type. With it there is no need to type
+		full class name with template parameters everytime.
+	*/
 	typedef basic_bit_box<bits_type> self_type;
 
 	// public constants --------------------------------------------------------
 
-	//! \brief Predefined types for bit_box data
-	/*!	Only 0 is strictly reserved - it represents data type of bit_box. All
-		other identifiers are free to use. But it's a good idea not to use
-		those predefined values, because they are very common and can be
-		used by some bit_box wrappers (for example, STL like stream wrapper).
+	//! \brief Predefined type identifiers for <i>%bit_box</i> data
+	/*!	Only 0 is strictly reserved - it represents data type of another
+		(nested) <i>%bit_box</i>. All other identifiers are free to use. But
+		it's a good idea not to use this predefined values, because they are
+		very common and can be used by some <i>%bit_box</i> wrapper (for
+		example, STL like stream wrapper).
 	*/
 	enum bb_types
 	{
@@ -141,10 +177,11 @@ public:
 	//! \brief Constructor
 	/*!	\param[in] bits Pointer on bit_box data with header information
 
-		\attention It's very important, that header must precedes real
-		bit_box data.
+		This constructor extracts from bit_box header type idenifier and size
+		of data.
 
-		This constructor extracts from bit_box header size and type of data.
+		\attention It's very important, that <b>real</b> header must precedes
+		bit_box data.
 	*/
 	basic_bit_box(bits_type *const bits)
 	{
@@ -182,6 +219,11 @@ public:
 	basic_bit_box(const basic_bit_box<t> &src):
 		_bits(reinterpret_cast<t *>(src.bits())),
 		_sz(src.sz()), _type_id(src.type_id())
+	{
+	}
+
+	//!	\brief Destructor
+	virtual ~basic_bit_box()
 	{
 	}
 

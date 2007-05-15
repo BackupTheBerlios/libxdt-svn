@@ -44,7 +44,7 @@ namespace bit_box
 
 ////////////////////////////////////////////////////////////////////////////////
 // bit_box class declaration
-//! \brief Elementary bit_box container that can read and iterate throw
+//! \brief Elementary bit_box container that can read and iterate through
 //!	bit_box data.
 /*!	
 */
