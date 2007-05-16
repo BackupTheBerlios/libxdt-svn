@@ -223,6 +223,8 @@ public:
 	}
 
 	//!	\brief Destructor
+	/*!	\todo Do we really need it?
+	*/
 	virtual ~basic_bit_box()
 	{
 	}
