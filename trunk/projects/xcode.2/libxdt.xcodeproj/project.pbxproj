@@ -1,0 +1,290 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		07ED0CD80BFC7477009847F4 /* ostype.h in Headers */ = {isa = PBXBuildFile; fileRef = 07ED0CD00BFC7477009847F4 /* ostype.h */; };
+		07ED0CD90BFC7477009847F4 /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 07ED0CD10BFC7477009847F4 /* types.h */; };
+		07ED0CDA0BFC7477009847F4 /* basic_bit_box.h in Headers */ = {isa = PBXBuildFile; fileRef = 07ED0CD30BFC7477009847F4 /* basic_bit_box.h */; };
+		07ED0CDB0BFC7477009847F4 /* bit_box.h in Headers */ = {isa = PBXBuildFile; fileRef = 07ED0CD40BFC7477009847F4 /* bit_box.h */; };
+		07ED0CDC0BFC7477009847F4 /* cf_wrap.h in Headers */ = {isa = PBXBuildFile; fileRef = 07ED0CD60BFC7477009847F4 /* cf_wrap.h */; };
+		07ED0CDD0BFC7477009847F4 /* handle_w.h in Headers */ = {isa = PBXBuildFile; fileRef = 07ED0CD70BFC7477009847F4 /* handle_w.h */; };
+		07ED0CE50BFC74AD009847F4 /* example_01.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07ED0CE30BFC74AD009847F4 /* example_01.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		07ED0CD00BFC7477009847F4 /* ostype.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ostype.h; path = ../../xdt/base/ostype.h; sourceTree = SOURCE_ROOT; };
+		07ED0CD10BFC7477009847F4 /* types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = types.h; path = ../../xdt/base/types.h; sourceTree = SOURCE_ROOT; };
+		07ED0CD30BFC7477009847F4 /* basic_bit_box.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = basic_bit_box.h; path = ../../xdt/bit_box/basic_bit_box.h; sourceTree = SOURCE_ROOT; };
+		07ED0CD40BFC7477009847F4 /* bit_box.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = bit_box.h; path = ../../xdt/bit_box/bit_box.h; sourceTree = SOURCE_ROOT; };
+		07ED0CD60BFC7477009847F4 /* cf_wrap.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cf_wrap.h; path = ../../xdt/macos/cf_wrap.h; sourceTree = SOURCE_ROOT; };
+		07ED0CD70BFC7477009847F4 /* handle_w.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = handle_w.h; path = ../../xdt/macos/handle_w.h; sourceTree = SOURCE_ROOT; };
+		07ED0CE00BFC74A2009847F4 /* srcmerge.py */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.python; name = srcmerge.py; path = ../../src/srcmerge/srcmerge.py; sourceTree = SOURCE_ROOT; };
+		07ED0CE30BFC74AD009847F4 /* example_01.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = example_01.cpp; path = ../../example/bit_box/example_01.cpp; sourceTree = SOURCE_ROOT; };
+		D2AAC046055464E500DB518D /* liblibxdt.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibxdt.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289987405E68DCB004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		07ED0CCE0BFC7477009847F4 /* xdt */ = {
+			isa = PBXGroup;
+			children = (
+				07ED0CCF0BFC7477009847F4 /* base */,
+				07ED0CD20BFC7477009847F4 /* bit_box */,
+				07ED0CD50BFC7477009847F4 /* macos */,
+			);
+			name = xdt;
+			path = ../../xdt;
+			sourceTree = SOURCE_ROOT;
+		};
+		07ED0CCF0BFC7477009847F4 /* base */ = {
+			isa = PBXGroup;
+			children = (
+				07ED0CD00BFC7477009847F4 /* ostype.h */,
+				07ED0CD10BFC7477009847F4 /* types.h */,
+			);
+			name = base;
+			path = ../../xdt/base;
+			sourceTree = SOURCE_ROOT;
+		};
+		07ED0CD20BFC7477009847F4 /* bit_box */ = {
+			isa = PBXGroup;
+			children = (
+				07ED0CD30BFC7477009847F4 /* basic_bit_box.h */,
+				07ED0CD40BFC7477009847F4 /* bit_box.h */,
+			);
+			name = bit_box;
+			path = ../../xdt/bit_box;
+			sourceTree = SOURCE_ROOT;
+		};
+		07ED0CD50BFC7477009847F4 /* macos */ = {
+			isa = PBXGroup;
+			children = (
+				07ED0CD60BFC7477009847F4 /* cf_wrap.h */,
+				07ED0CD70BFC7477009847F4 /* handle_w.h */,
+			);
+			name = macos;
+			path = ../../xdt/macos;
+			sourceTree = SOURCE_ROOT;
+		};
+		07ED0CDE0BFC74A2009847F4 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				07ED0CDF0BFC74A2009847F4 /* srcmerge */,
+			);
+			name = src;
+			path = ../../src;
+			sourceTree = SOURCE_ROOT;
+		};
+		07ED0CDF0BFC74A2009847F4 /* srcmerge */ = {
+			isa = PBXGroup;
+			children = (
+				07ED0CE00BFC74A2009847F4 /* srcmerge.py */,
+			);
+			name = srcmerge;
+			path = ../../src/srcmerge;
+			sourceTree = SOURCE_ROOT;
+		};
+		07ED0CE10BFC74AD009847F4 /* example */ = {
+			isa = PBXGroup;
+			children = (
+				07ED0CE20BFC74AD009847F4 /* bit_box */,
+				07ED0CE40BFC74AD009847F4 /* macos */,
+			);
+			name = example;
+			path = ../../example;
+			sourceTree = SOURCE_ROOT;
+		};
+		07ED0CE20BFC74AD009847F4 /* bit_box */ = {
+			isa = PBXGroup;
+			children = (
+				07ED0CE30BFC74AD009847F4 /* example_01.cpp */,
+			);
+			name = bit_box;
+			path = ../../example/bit_box;
+			sourceTree = SOURCE_ROOT;
+		};
+		07ED0CE40BFC74AD009847F4 /* macos */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = macos;
+			path = ../../example/macos;
+			sourceTree = SOURCE_ROOT;
+		};
+		08FB7794FE84155DC02AAC07 /* libxdt */ = {
+			isa = PBXGroup;
+			children = (
+				07ED0CE10BFC74AD009847F4 /* example */,
+				07ED0CDE0BFC74A2009847F4 /* src */,
+				07ED0CCE0BFC7477009847F4 /* xdt */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = libxdt;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC046055464E500DB518D /* liblibxdt.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC043055464E500DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07ED0CD80BFC7477009847F4 /* ostype.h in Headers */,
+				07ED0CD90BFC7477009847F4 /* types.h in Headers */,
+				07ED0CDA0BFC7477009847F4 /* basic_bit_box.h in Headers */,
+				07ED0CDB0BFC7477009847F4 /* bit_box.h in Headers */,
+				07ED0CDC0BFC7477009847F4 /* cf_wrap.h in Headers */,
+				07ED0CDD0BFC7477009847F4 /* handle_w.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC045055464E500DB518D /* libxdt */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "libxdt" */;
+			buildPhases = (
+				D2AAC043055464E500DB518D /* Headers */,
+				D2AAC044055464E500DB518D /* Sources */,
+				D289987405E68DCB004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libxdt;
+			productName = libxdt;
+			productReference = D2AAC046055464E500DB518D /* liblibxdt.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "libxdt" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* libxdt */;
+			projectDirPath = "";
+			targets = (
+				D2AAC045055464E500DB518D /* libxdt */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC044055464E500DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07ED0CE50BFC74AD009847F4 /* example_01.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91EC08733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = libxdt;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB91ED08733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = libxdt;
+			};
+			name = Release;
+		};
+		1DEB91F008733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB91F108733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "libxdt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91EC08733DB70010E9CD /* Debug */,
+				1DEB91ED08733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "libxdt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91F008733DB70010E9CD /* Debug */,
+				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
