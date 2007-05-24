@@ -191,10 +191,11 @@ public:
 	//! \brief Constructor
 	/*!	\param[in] bits Pointer on raw bit_box data
 		\param[in] sz Size of bit_box data (raw data, without any headers)
-		pointed by \c bits
+		pointed by <i>bits</i>
 
-		This constructor sets \c type to basic_bit_box::bbt_bit_box, so
-		use it only with data that is another bit_box.
+		This constructor sets type identifier to
+		<i>basic_bit_box::bbt_bit_box</i> so use it only with data that
+		is another bit_box.
 	*/
 	basic_bit_box(bits_type *const bits, const size_type sz)
 	{
@@ -202,18 +203,21 @@ public:
 	}
 
 	//! \brief Copy constructor
-	/*!	\param[in] src Source basic_bit_box to copy from. Nothing tricky,
-		just copy as is.
+	/*!	\param[in] src Source <i>basic_bit_box</i> to copy from. Nothing
+		tricky, just copy as is.
+
+		j
 
 		\attention This copy constructor copies only pointers, not their data.
 		basic_bit_box does no any memory allocation in every its part.
 		Remember it :^)
 
-		\attention You can't assign basic_bit_box with \c bits_type, for
-		example, \c const \c xdt::byte_t to basic_bit_box with \c bits_type
-		\c xdt::byte_t. In first case we have pointer on constant data. In
-		second - pointer on volatile data. So, if you will get a compilation
-		error here - check your code once again on such mistakes.
+		\attention You can't assign <i>basic_bit_box</i> with
+		<i>bits_type</i>, for example, <i>const xdt::byte_t</i> to
+		<i>basic_bit_box</i> with <i>bits_type</i> <i>xdt::byte_t</i>. In
+		first case we have pointer on constant data. In second - pointer on
+		volatile data. So, if you will get a compilation error here - check
+		your code once again on such mistakes.
 	*/
 	template <class t>
 	basic_bit_box(const basic_bit_box<t> &src):
