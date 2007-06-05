@@ -175,10 +175,10 @@ public:
 	//@{
 	
 	//! \brief Constructor
-	/*!	\param[in] bits Pointer on bit_box data with header information
+	/*!	\param[in] bits Pointer on <i>%bit_box</i> data with header information
 
 		This constructor extracts from bit_box header type idenifier and size
-		of data.
+		of contained data.
 
 		\attention It's very important, that <b>real</b> header must precedes
 		bit_box data.
