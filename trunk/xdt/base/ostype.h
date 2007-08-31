@@ -3,7 +3,8 @@
 	\author   mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com
 	\brief    OS specific defines
 
-	\todo     Add detailed comment for ostype.h file
+	This header serves only one purpose - it detects OS and OS type on wich
+	(or for wich) it is sompiled.
 */
 
 #pragma once

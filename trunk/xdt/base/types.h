@@ -3,7 +3,13 @@
 	\author   mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com
 	\brief    Declarations of small simple types
 
-	\todo     Add detailed comment for types.h file
+	Here you can find simple type declarations. There is no complex
+	structures or cool classes with smart and convenient methods - just
+	atomic types, small bricks to build <i>xdt</i> library.
+
+	Like any other library, <i>xdt</i> defines its own types for some
+	platform specific things, like 32-bit or 64-bit integer. Now support
+	of this kind of types is very poor.
 */
 
 #pragma once
@@ -29,7 +35,7 @@
 #elif defined	XDT_OS_WINDOWS
 	#include <windows.h>
 #elif defined	XDT_OS_LINUX
-
+	#error TODO: what is unix header for this?
 #else
 	#error No support for target OS
 #endif
@@ -53,28 +59,28 @@ namespace xdt {
 #ifdef XDT_OS_MACOS
 
 	//! \brief Unsigned integer 8bit type for Mac OS
-	typedef UInt8	uint8;
+	typedef UInt8	uint8_t;
 	//! \brief Unsigned integer 16bit type for Mac OS
-	typedef UInt16	uint16;
+	typedef UInt16	uint16_t;
 	//! \brief Unsigned integer 32bit type for Mac OS
-	typedef UInt32	uint32;
+	typedef UInt32	uint32_t;
 	//! \brief Signed integer 32bit type for Mac OS
-	typedef SInt32	sint32;
+	typedef SInt32	sint32_t;
 
 #elif defined XDT_OS_WINDOWS
 
 	//! \brief Unsigned integer 8bit type for Windows
-	typedef BYTE	uint8;
+	typedef BYTE	uint8_t;
 	//! \brief Unsigned integer 16bit type for Windows
-	typedef WORD	uint16;
+	typedef WORD	uint16_t;
 	//! \brief Unsigned integer 32bit type for Windows
-	typedef DWORD	uint32;
+	typedef DWORD	uint32_t;
 	//! \brief Signed integer 32bit type for Windows
-	typedef LONG	sint32;
+	typedef LONG	sint32_t;
 
 #elif defined XDT_OS_LINUX
 
-	typedef unsigned int uint32;
+	#error No typedefs for this OS now
 
 #else 
 	#error No support for target OS
@@ -88,7 +94,7 @@ namespace xdt {
 /*!	It's cool sometimes to have cpecial type for this. Byte is always byte
 	and it is good. Like free lunch :^)
 */
-typedef uint8 byte_t;
+typedef uint8_t byte_t;
 
 
 

@@ -2,18 +2,11 @@
 // #include <xdt/bit_box/bit_box.h>
 #include <list>
 
-int main() {
-	/*
-	typedef std::list<int>::iterator iter_t;
-	typedef std::list<int>::const_iterator citer_t;
-	std::list<int> list;
-	iter_t i1 = list.begin();
-	citer_t i2 = list.begin();
-	i1 = i2;
-	i2 = i1;
-	citer_t i3(i2);
-	*/
-
+int main()
+{
+	// size of fake bit_box
+	static const xdt::uint32_t fake_bit_box_sz = 1024;
+	xdt::byte_t *const = malloc();
 	xdt::bit_box::basic_bit_box<char> bb1(0);
 	xdt::bit_box::basic_bit_box<const char> bb2(0);
 

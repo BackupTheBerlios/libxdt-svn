@@ -18,6 +18,7 @@
 // headers
 
 // code configuration headers
+#include <xdt/base/types.h>
 #include <assert.h>
 
 // standart C++ library headers
@@ -74,7 +75,7 @@ namespace bit_box
 	- Its data. Every <i>%basic_bit_box</i> has pointer on its data,
 	  called <i>"bits"</i>.
 	- Size of this data (in bytes).
-	- Type identifier for this data, wich tells what kind of stuff it have. 
+	- Type identifier for this data, wich tells what kind of stuff it has.
 
 	Some words about magic type identifiers. <i>%basic_bit_box</i> works with
 	raw bytes, it has no idea with what really data it operates.
@@ -82,7 +83,7 @@ namespace bit_box
 	user to decide, what type some data has. Only 0 (zero) is reserved to
 	represent another (nested) <i>%bit_box</i>. Also, <i>%basic_bit_box</i>
 	has some predefined type identifiers, and it's good idea for custom
-	types not to overlap with them.
+	types not to overlap with them (basic_bit_box::bb_types).
 
 	To unify it's usage <i>%basic_bit_box</i> defines some types, in STL
 	compatible manner:
@@ -99,7 +100,10 @@ namespace bit_box
 	<i>%basic_bit_box</i> has one important feature - it knows internals of
 	<i>%bit_box</i> data format. So, it is possible to extract data type
 	identifier, data size and data itself from <i>%bit_box</i> data memory
-	block.
+	block. Note, that <i>%basic_bit_box</i> uses special types for values,
+	stored in its memory block (like xdt::uint32_t, for example). So you can
+	easily transfer <i>%bit_box</i> data from one system to another -
+	everything will be okay.
 
 	Class has no error checking built-in (we want to make it as fast as
 	possible), so if you get data from noisy and lossy channel - use something
@@ -109,7 +113,12 @@ namespace bit_box
 	\note The only reason, that <i>%basic_bit_box</i> is a template class,
 	is to allow both constant and non-constant data pointers. Try not to use
 	this feature in other ways (however, it correctly handles any type of
-	template parameter).
+	template parameter). Here small example of what like template parameter
+	should be:
+	\code
+	xdt::bit_box::basic_bit_box<xdt::byte_t>		bb1(0);
+	xdt::bit_box::basic_bit_box<const xdt::byte_t>	bb2(0);
+	\endcode
 
 	<i>%basic_bit_box</i> is not very useful by itself. However here is a small
 	example to simplify understanding of this class:
@@ -136,10 +145,10 @@ public:
 
 	//! \brief Type to store size of <i>%bit_box</i> data, or something like
 	//!	this.
-	typedef unsigned int size_type;
+	typedef uint32_t size_type;
 
 	//! \brief Type for type identifiers. Just unsigned integer.
-	typedef unsigned int type_id_type;
+	typedef uint32_t type_id_type;
 
 	//!	\brief Type of this <i>%basic_bit_box</i>
 	/*!	It's very useful to have such type. With it there is no need to type
@@ -161,7 +170,7 @@ public:
 		bbt_bit_box	= 0,	//!< \brief Data is another (nested) bit_box
 		bbt_index	= 1,	//!< \brief bit_box data index (not used now)
 		bbt_binary	= 2,	//!< \brief Data is byte array
-		bbt_int32	= 3,	//!< \brief Data is 32 bit signed integer
+		bbt_sint32	= 3,	//!< \brief Data is 32 bit signed integer
 		bbt_uint32	= 4,	//!< \brief Data is 32 bit unsigned integer
 		bbt_double	= 5,	//!< \brief Data is 64 bit floating point value
 		bbt_string	= 6,	//!< \brief Data is null-terminated ASCII string
@@ -177,11 +186,11 @@ public:
 	//! \brief Constructor
 	/*!	\param[in] bits Pointer on <i>%bit_box</i> data with header information
 
-		This constructor extracts from bit_box header type idenifier and size
-		of contained data.
+		This constructor extracts from <i>%bit_box</i> header type idenifier and
+		size of contained (stored) data.
 
 		\attention It's very important, that <b>real</b> header must precedes
-		bit_box data.
+		<i>%bit_box</i> stored data.
 	*/
 	basic_bit_box(bits_type *const bits)
 	{
@@ -205,8 +214,6 @@ public:
 	//! \brief Copy constructor
 	/*!	\param[in] src Source <i>basic_bit_box</i> to copy from. Nothing
 		tricky, just copy as is.
-
-		j
 
 		\attention This copy constructor copies only pointers, not their data.
 		basic_bit_box does no any memory allocation in every its part.
@@ -306,7 +313,7 @@ protected:
 
 	//! \brief Alias for header type with proper <i>const</i> modifier
 	/*!	I think it's not a good idea to widely use this type. It's part of
-		header information and it's good to keep is protected as long as
+		header information and it's good to keep it protected as long as
 		possible.
 	*/
 	typedef typename _const_transplant<bits_type, _header_t>::t _header_type;
@@ -339,6 +346,7 @@ protected:
 		\param[in] sz Size of data in bytes
 		\param[in] type_id Type of data. Any identifier or one of predefined in
 		basic_bit_box::bb_types.
+
 		This function is the only direct way to set internal data
 		information. It does no any error checks.
 	*/
