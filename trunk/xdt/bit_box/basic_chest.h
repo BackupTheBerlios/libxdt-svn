@@ -54,14 +54,8 @@ namespace xdt
 	organizing some message or event driven communications.
 
 	<i>%bit_box</i> is much like an STL compatible container. But not at all.
-	It has different classes for reading and writing (something like STL
-	streams):
-	- xdt::bit_box::reader with only read acces
-	- xdt::bit_box::writer with both read and write access
 
-	So, you have to choose between them, because <i>%writer</i> works only
-	with internal storage by allocating memory for it and can't attach to
-	external storage.
+	\todo Need more comments on bit_box namespace
 */
 namespace bit_box
 {
@@ -70,24 +64,23 @@ namespace bit_box
 ////////////////////////////////////////////////////////////////////////////////
 // basic_chest class declaration
 //! \brief Simplest unit of <i>%bit_box</i> data. Also base class for almost
-//!	all <i>%bit_box</i> suit.
+//!	all <i>%bit_box</i> suit. Handles the most simple "physical level" work.
 /*!	<b>%basic_chest</b> is called basic because it is really basic :^) But
-	it is powerful enough to be a base class to almost all <i>%bit_box</i>
-	suit. Any <i>%basic_chest</i> holds information about:
-	- Its data. Every <i>%basic_chest</i> has pointer on its data,
-	  called <i>"bits"</i>.
-	- Size of this data (in bytes).
-	- Type identifier for this data, wich tells what kind of stuff it has.
+	it is powerful enough to be a base class for almost all <i>%bit_box</i>
+	suit. Any <i>%basic_chest</i> attached to memory partition, called
+	<i>solid block</i>. Solid block has two parts: header information and
+	stored data (called <i>bits</i>). From header information
+	<i>%basic_chest</i> knows size and type identifier of its data.
 
-	Some words about magic type identifiers. <i>%basic_bit_box</i> works with
-	raw bytes, it has no idea with what really data it operates.
-	<i>%bit_box</i> data type identifier is just a number. It's up to class
-	user to decide, what type some data has. Only 0 (zero) is reserved to
-	represent another (nested) <i>%bit_box</i>. Also, <i>%basic_bit_box</i>
-	has some predefined type identifiers, and it's good idea for custom
-	types not to overlap with them (basic_bit_box::bb_types).
+	Some words about magic type identifiers. <i>%basic_chest</i> works
+	with raw bytes, it has no idea with what really data it operates. And this
+	is good. So, <i>%bit_box</i> data type identifier is just a number.
+	It's up to class user to decide, what type some data has. Only 0 (zero) is
+	reserved to represent another (nested) <i>%basic_chest</i>. Also,
+	<i>%basic_chest</i> has some predefined type identifiers, and it's good
+	idea for custom types not to overlap with them (basic_chest::bb_types).
 
-	To unify it's usage <i>%basic_bit_box</i> defines some types, in STL
+	To unify its usage <i>%basic_chest</i> defines some types, in STL
 	compatible manner:
 	- basic_bit_box::size_type to represent some size or length. Note, that
 	  in terms of <i>%bit_box</i> <i>size</i> is size in bytes of associated
@@ -99,37 +92,41 @@ namespace bit_box
 	  automatically to guarantee that pointers are really of some pointer type.
 	- basic_bit_box::type_id_type for type identifiers. Just unsigned integer.
 
-	<i>%basic_bit_box</i> has one important feature - it knows internals of
+	<i>%basic_chest</i> has one important feature - it knows internals of
 	<i>%bit_box</i> data format. So, it is possible to extract data type
-	identifier, data size and data itself from <i>%bit_box</i> data memory
-	block. Note, that <i>%basic_bit_box</i> uses special types for values,
-	stored in its memory block (like xdt::uint32_t, for example). So you can
-	easily transfer <i>%bit_box</i> data from one system to another -
-	everything will be okay.
+	identifier, data size and data itself from solid data block. Note, that
+	<i>%basic_chest</i> uses special types for values, stored in its
+	header(like xdt::uint32_t, for example). So you can easily transfer
+	<i>%bit_box</i> data from one system to another - everything will be okay.
 
 	Class has no error checking built-in (we want to make it as fast as
 	possible), so if you get data from noisy and lossy channel - use something
 	like CRC to prevent destructive consequences. You are responsible to give
-	pointers on valid memory blocks with valid <i>%bit_box</i> headers.
+	pointers on valid memory blocks with valid <i>%basic_chest</i> headers.
 
-	\note The only reason, that <i>%basic_bit_box</i> is a template class,
+	\note The only reason, that <i>%basic_chest</i> is a template class,
 	is to allow both constant and non-constant data pointers. Try not to use
 	this feature in other ways (however, it correctly handles any type of
-	template parameter). Here small example of what like template parameter
+	template parameters). Here small example of what like template parameter
 	should be:
 	\code
-	xdt::bit_box::basic_bit_box<xdt::byte_t>		bb1(0);
-	xdt::bit_box::basic_bit_box<const xdt::byte_t>	bb2(0);
+	xdt::bit_box::basic_chest<xdt::byte_t>		 bb1(0);
+	xdt::bit_box::basic_chest<const xdt::byte_t> bb2(0);
 	\endcode
 
-	<i>%basic_bit_box</i> is not very useful by itself. However here is a small
+	<i>%basic_chest</i> is not very useful by itself. However here is a small
 	example to simplify understanding of this class:
 	\code
 	//TODO: some example
 	xdt::bit_box::basic_bit_box<char> bb(0);
 	\endcode
+	
+	Few words about template parameters. <i>solid_t</i> serves to build
+	pointer type <i>(solid_t *)</i> that will represent pointers on solid
+	block. <i>bits_t</i> serves to build <i>(bits_t *)</i> pointer type that
+	will represent pointers on data, stored in <i>%basic_chest</i>.
 
-	\todo basic_bit_box needs some example code
+	\todo basic_chest needs some example code
 */
 template <class solid_t, class bits_t>
 class basic_chest
@@ -137,7 +134,7 @@ class basic_chest
 public:
 	// public types ------------------------------------------------------------
 
-	//!	\brief 
+	//!	\brief Alias for template parameter <i>solid_t</i>
 	/*!	
 	*/
 	typedef solid_t solid_type;
@@ -159,6 +156,8 @@ public:
 
 	//! \brief Type for type identifiers. Just unsigned integer.
 	typedef uint32_t type_id_type;
+	
+	typedef size_t
 
 	//!	\brief Type of this <i>%basic_bit_box</i>
 	/*!	It's very useful to have such type. With it there is no need to type
@@ -277,22 +276,7 @@ public:
 protected:
 	// protected types ---------------------------------------------------------
 
-	//! \brief Header that precedes actual data and hold size and type
-	//!	information
-	/*!	Header has size and type identifier of bit_box data. It's for bit_box
-		internal usage only.
-	*/
-	#pragma pack(push, 4)
-	struct _header_t
-	{
-		//!	\brief Size of bit_box data in bytes
-		bits_sz_type bits_sz;
-		//!	\brief Type identifier of bit_box data
-		type_id_type type_id;
-	};
-	#pragma pack(pop)
-
-	//! \brief Transplants <i>const</i> modifier from one type to another
+	//! \brief Transplants <i>const</i> modifier from one type to another.
 	//!	Baseline declaration for non-constant types.
 	/*!	This helper class is useful when you need to transplant
 		<i>const modifier</i> from one type to another. It means, that second
@@ -309,21 +293,39 @@ protected:
 		in separate sub-library. For example, in
 		<tt>xdt/tricks/const_transplantator.h</tt>.
 	*/
-	template <class src, class dest>
-	struct _const_transplant {
+	template <class src_t, class dest_t>
+	struct _const_transplant
+	{
 		//! \brief Resulting type
-		typedef dest t;
+		typedef dest_t t;
 	};
 
 	//! \brief Transplants <i>const</i> modifier from one type to another.
 	//!	Specialization for constant types.
 	/*!	\sa _const_transplant
 	*/
-	template <class src, class dest>
-	struct _const_transplant<const src, dest> {
+	template <class src_t, class dest_t>
+	struct _const_transplant<const src_t, dest_t>
+	{
 		//! \brief Resulting type
-		typedef const dest t;
+		typedef const dest_t t;
 	};
+
+	//! \brief Header that precedes actual data and hold size and type
+	//!	information
+	/*!	<i>%basic_chest</i> incapsulates all functionality, required for
+		working with solid blocks. Therefor this header for bit_box
+		internal usage only.
+	*/
+	#pragma pack(push, 1)
+	struct _header_t
+	{
+		//!	\brief Size of stored data in bytes
+		bits_sz_type bits_sz;
+		//!	\brief Type identifier of stored data
+		type_id_type type_id;
+	};
+	#pragma pack(pop)
 
 	//! \brief Alias for header type with proper <i>const</i> modifier
 	/*!	I think it's not a good idea to widely use this type. It's part of
@@ -374,11 +376,42 @@ protected:
 		_type_id	= type_id;
 	}
 
+	//!	\brief Loading
+	/*!	\param[in] solid_ptr 
+	*/
 	void _set(solid_t *const solid_ptr)
 	{
 		assert(0 != solid_ptr);
 
 		_header	= (_header_type *)solid_ptr;
+		
+		_bits = reinterpret_cast<bits_type *>(_header + 1);
+	}
+
+	//!	\brief 
+	/*!	\param[in,out] solid_ptr
+		\param[in] bits_sz
+		\param[in] type_id
+	*/
+	void _set(solid_t *const solid_ptr, const bits_sz_type &bits_sz,
+			  const type_id_type &type_id)
+	{
+		_set(solid_ptr);
+
+		assert(0 != _header);
+
+		_header->bits_sz = bits_sz;
+		_header->type_id = type_id;
+	}
+
+	//!	\brief
+	/*!
+	*/
+	void _set_type_id(const type_id_type &type_id)
+	{
+		assert(0 != _header);
+		
+		_header->type_id = type_id;
 	}
 
 private:
