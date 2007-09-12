@@ -46,7 +46,14 @@ namespace bit_box
 // bit_box class declaration
 //! \brief Elementary bit_box container that can read and iterate through
 //!	bit_box data.
-/*!	
+/*!
+
+	\code
+	xdt::bit_box::writer writer;
+	writer.put(data_ptr, size, type);
+	xdt::bit_box::writer writer(size);
+	xdt::bit_box::writer writer(ptr, size);
+	\endcode
 */
 template <class data_type>
 class bit_box: public basic_bit_box<data_type>

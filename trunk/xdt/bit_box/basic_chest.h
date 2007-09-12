@@ -1,25 +1,27 @@
-/*!	\file		basic_bit_box.h
+/*!	\file		basic_chest.h
 	\version	0.0.1
 	\author		mice, ICQ: 332-292-380, mailto:wonder.mice@gmail.com
-	\brief		Declarations and difinitions for xdt::bit_box::basic_bit_box
+	\brief		Declarations and difinitions for xdt::bit_box::basic_chest
 				template class
 
-	\sa xdt::bit_box, xdt::bit_box::basic_bit_box
+	\sa xdt::bit_box, xdt::bit_box::basic_chest
 
-	\todo		Add detailed comment for basic_bit_box.h file
+	\todo		Add detailed comment for basic_chest.h file
 */
 
 #pragma once
 
-#ifndef XDT_BIT_BOX_BASIC_BIT_BOX_INCLUDED
-#define XDT_BIT_BOX_BASIC_BIT_BOX_INCLUDED
+#ifndef XDT_BIT_BOX_BASIC_CHEST_INCLUDED
+#define XDT_BIT_BOX_BASIC_CHEST_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
 // headers
 
-// code configuration headers
-#include <xdt/base/types.h>
+// debug headers
 #include <assert.h>
+
+// xdt atomic types headers
+#include <xdt/base/types.h>
 
 // standart C++ library headers
 // none
@@ -49,7 +51,7 @@ namespace xdt
 
 	<i>%bit_box</i> suit was originally designed to send sets of mixed binary
 	data through a pipe-like (or socket-like) channel. It may be helpful, when
-	organizing some message driven communications.
+	organizing some message or event driven communications.
 
 	<i>%bit_box</i> is much like an STL compatible container. But not at all.
 	It has different classes for reading and writing (something like STL
@@ -66,13 +68,13 @@ namespace bit_box
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// basic_bit_box class declaration
+// basic_chest class declaration
 //! \brief Simplest unit of <i>%bit_box</i> data. Also base class for almost
 //!	all <i>%bit_box</i> suit.
-/*!	<b>%basic_bit_box</b> is called basic because it is really basic :^) But
+/*!	<b>%basic_chest</b> is called basic because it is really basic :^) But
 	it is powerful enough to be a base class to almost all <i>%bit_box</i>
-	suit. Any <i>%basic_bit_box</i> holds information about:
-	- Its data. Every <i>%basic_bit_box</i> has pointer on its data,
+	suit. Any <i>%basic_chest</i> holds information about:
+	- Its data. Every <i>%basic_chest</i> has pointer on its data,
 	  called <i>"bits"</i>.
 	- Size of this data (in bytes).
 	- Type identifier for this data, wich tells what kind of stuff it has.
@@ -129,23 +131,31 @@ namespace bit_box
 
 	\todo basic_bit_box needs some example code
 */
-template <class bits_t>
-class basic_bit_box
+template <class solid_t, class bits_t>
+class basic_chest
 {
 public:
 	// public types ------------------------------------------------------------
 
+	//!	\brief 
+	/*!	
+	*/
+	typedef solid_t solid_type;
+
 	//! \brief Alias for template parameter <i>bits_t</i>
-	/*!	Represents type, on wich <i>%basic_bit_box</i> pointers will point.
+	/*!	Represents type, on wich <i>%basic_chest</i> pointers will point.
 		It's not a real pointer type, because you always can add star
 		(<i>*</i>) to any type and get pointer type. But it is difficult
 		to remove star from type (to dereference a type) without any tricks.
 	*/
 	typedef bits_t bits_type;
 
-	//! \brief Type to store size of <i>%bit_box</i> data, or something like
-	//!	this.
-	typedef uint32_t size_type;
+	//! \brief Type to store size of stored <i>%basic_chest</i> data, or
+	//!	something like this.
+	/*!	\note We can't use cool <i>STL</i> <i>size_t</i>, because we
+		need some cross-platform type.
+	*/
+	typedef uint32_t bits_sz_type;
 
 	//! \brief Type for type identifiers. Just unsigned integer.
 	typedef uint32_t type_id_type;
@@ -154,7 +164,7 @@ public:
 	/*!	It's very useful to have such type. With it there is no need to type
 		full class name with template parameters everytime.
 	*/
-	typedef basic_bit_box<bits_type> self_type;
+	typedef basic_chest<solid_type, bits_type> self_type;
 
 	// public constants --------------------------------------------------------
 
@@ -192,9 +202,9 @@ public:
 		\attention It's very important, that <b>real</b> header must precedes
 		<i>%bit_box</i> stored data.
 	*/
-	basic_bit_box(bits_type *const bits)
+	basic_chest(solid_type *const solid_ptr)
 	{
-		_set(bits);
+		_set(solid_ptr);
 	}
 
 	//! \brief Constructor
@@ -206,9 +216,10 @@ public:
 		<i>basic_bit_box::bbt_bit_box</i> so use it only with data that
 		is another bit_box.
 	*/
-	basic_bit_box(bits_type *const bits, const size_type sz)
+	basic_chest(solid_type *const solid_ptr, const bits_sz_type &bits_sz,
+				const type_id_type &type_id)
 	{
-		_set(bits, sz, bbt_bit_box);
+		_set(solid_ptr, sz, bbt_bit_box);
 	}
 
 	//! \brief Copy constructor
@@ -266,19 +277,22 @@ public:
 protected:
 	// protected types ---------------------------------------------------------
 
-	//! \brief bit_box data header
+	//! \brief Header that precedes actual data and hold size and type
+	//!	information
 	/*!	Header has size and type identifier of bit_box data. It's for bit_box
 		internal usage only.
 	*/
 	#pragma pack(push, 4)
 	struct _header_t
 	{
-		size_type sz;			//!< \brief Size of bit_box data in bytes
-		type_id_type type_id;	//!< \brief Type identifier of bit_box data
+		//!	\brief Size of bit_box data in bytes
+		bits_sz_type bits_sz;
+		//!	\brief Type identifier of bit_box data
+		type_id_type type_id;
 	};
 	#pragma pack(pop)
 
-	//! \brief Transplants <i>const</i> modifier from one type to another.
+	//! \brief Transplants <i>const</i> modifier from one type to another
 	//!	Baseline declaration for non-constant types.
 	/*!	This helper class is useful when you need to transplant
 		<i>const modifier</i> from one type to another. It means, that second
@@ -316,7 +330,7 @@ protected:
 		header information and it's good to keep it protected as long as
 		possible.
 	*/
-	typedef typename _const_transplant<bits_type, _header_t>::t _header_type;
+	typedef typename _const_transplant<solid_type, _header_t>::t _header_type;
 
 	// protected methods -------------------------------------------------------
 
@@ -360,19 +374,23 @@ protected:
 		_type_id	= type_id;
 	}
 
+	void _set(solid_t *const solid_ptr)
+	{
+		assert(0 != solid_ptr);
+
+		_header	= (_header_type *)solid_ptr;
+	}
+
 private:
 	// private data ------------------------------------------------------------
 
-	//! \brief Pointer on bit_box data
+	//!	\brief Pointer on header that precedes stored data
+	_header_type *_header;
+
+	//! \brief Pointer on stored data
 	/*!	It is a pointer on raw data, without any headers or something else.
 	*/
 	bits_type *_bits;
-
-	//! \brief Size of data pointed by basic_bit_box::_bits
-	size_type _sz;
-
-	//!	\brief Type identifier of pointed data
-	type_id_type _type_id;
 
 };
 
@@ -386,4 +404,80 @@ private:
 
 
 
-#endif	// XDT_BIT_BOX_BASIC_BIT_BOX_INCLUDED
+#endif	// XDT_BIT_BOX_BASIC_CHEST_INCLUDED
+
+
+
+
+
+//!	\brief Only physical level!!!
+/*!
+*/
+template <class solid_t, class bits_t>
+class basic_chest
+{
+public:
+	// public types ------------------------------------------------------------
+
+	typedef solid_t solid_type;
+	typedef solid_t *solid_ptr_type;
+
+	typedef bits_t bits_type;
+	typedef bits_t *bits_ptr_type;
+
+	typedef uint32_t bits_sz_type;
+	typedef uint32_t type_id_type;
+
+	// public methods ----------------------------------------------------------
+
+	//!	\name Constructors and destructors
+	//@{
+
+	//!	\brief Constructor loads existing chest
+	basic_chest(solid_type *const solid_ptr)
+	{
+		set
+	}
+
+	//!	\brief Constructor maps new chest
+	basic_chest(solid_type *const solid_ptr, const bits_sz_type &bits_sz,
+				const type_id_type &type_id = 0);
+
+	template <class s_t, class b_t>
+	basic_chest(const basic_chest<s_t, b_t> &from);
+
+	//@}
+
+	bits_sz();
+	solid_sz();
+
+	bits_sz_type solid_sz() const;
+	solid_type *solid_ptr() const;
+
+
+protected:
+	// protected types ---------------------------------------------------------
+
+	//! \brief bit_box data header
+	/*!	Header has size and type identifier of bit_box data. It's for bit_box
+		internal usage only.
+	*/
+	#pragma pack(push, 1)
+	struct _header_t
+	{
+		capacity_type capacity;	//!< \brief Size of bit_box data in bytes
+		type_id_type type_id;	//!< \brief Type identifier of bit_box data
+	};
+	#pragma pack(pop)
+
+private:
+	// private data ------------------------------------------------------------
+
+	//!	\brief Pointer on header that precedes stored data
+	_header_t *_header;
+
+	//! \brief Pointer on stored data
+	/*!	It is a pointer on raw data, without any headers or something else.
+	*/
+	bits_type *_bits;
+};
