@@ -259,17 +259,48 @@ public:
 	//!	\brief Returns pointer on bit_box data
 	/*!	\return Pointer on bit_box data
 	*/
-	bits_type *bits() const { return _bits; }
+	bits_type *bits() const
+	{
+		assert(0 != _bits);
+
+		return _bits;
+	}
 
 	//!	\brief Returns size of bit_box data
 	/*! \return Size of bit_box data in bytes (8 bits)
 	*/
-	size_type sz() const { return _sz; }
+	size_type bits_sz() const
+	{
+		assert(0 != _bits);
 
-	//!	\brief Returns type of bit_box data
-	/*! \return Type of bit_box data as type identifier
+		return _header->bits_sz;
+	}
+
+	//!	\brief Returns type of stored data
+	/*! \return Constant reference on type identifier of stored data
 	*/
-	type_id_type type_id() const { return _type_id; }
+	const type_id_type &type_id() const
+	{
+		assert(0 != _header);
+
+		return _header->type_id;
+	}
+
+	//!	\brief Returns type of stored data
+	/*! \return Reference on type identifier of stored data
+
+		With this function you can change type identifier of stored data,
+		so be careful with it.
+
+		Maybe it's a good idea to put it in protected section in derived
+		classes.
+	*/
+	type_id_type &type_id()
+	{
+		assert(0 != _header);
+
+		return _header->type_id;
+	}
 
 	//@}
 
@@ -320,7 +351,7 @@ protected:
 	#pragma pack(push, 1)
 	struct _header_t
 	{
-		//!	\brief Size of stored data in bytes
+		//!	\brief Size of stored data (in bytes)
 		bits_sz_type bits_sz;
 		//!	\brief Type identifier of stored data
 		type_id_type type_id;
@@ -336,50 +367,24 @@ protected:
 
 	// protected methods -------------------------------------------------------
 
-	//! \brief Extracts data information from header and sets it
-	/*!	\param[in] bits Pointer on bit_box data with header information
+	//!	\brief Attaches <i>%basic_chest</i> to valid <i>%bit_box</i> data block
+	/*!	\param[in] solid_ptr Pointer on valid <i>%bit_box</i> data block
+		(<i>solid block</i>)
 
-		This function knows about headers. It will be pretty cool, if it will
-		stay the only function, that knows about them.
+		This function tells <i>%basic_chest</i> to use specified memory block.
+		It extracts header information and gets pointer on data, stored
+		in this block. So, it's up to you to provide good pointers on valid
+		solid blocks. After call to this function you can start using
+		basic_chest::_header and basic_chest::_bits pointers to work with
+		attached solid block. But be careful, it is big responsibility to have
+		full access to all <i>%basic_chest</i> header information. For example,
+		if's very bad idea to change _header_t::bits_sz field, because you
+		can loose integrity on higher level (break <i>%bit_box</i> data chain,
+		corrupt memory or something like this).
 
-		\attention Function extracts size and type of bit_box data using header
-		information. Try to make your best not to fool it by passing invalid
-		pointer - consequences will be unpredictable :^)
+		Constructor or assigment operator is a good place for this function.
 	*/
-	void _set(bits_type *const bits)
-	{
-		assert(0 != bits);
-
-		_header_type *header = (_header_type *)bits;
-
-		_set(reinterpret_cast<bits_type *>(header + 1),
-			 header->sz, header->type_id);
-	}
-
-	//! \brief Sets internal data information
-	/*!	\param[in] bits Pointer on bit_box data. Raw real data, without any
-		headers.
-		\param[in] sz Size of data in bytes
-		\param[in] type_id Type of data. Any identifier or one of predefined in
-		basic_bit_box::bb_types.
-
-		This function is the only direct way to set internal data
-		information. It does no any error checks.
-	*/
-	void _set(bits_type *const bits, const size_type sz,
-			  const type_id_type type_id = bbt_bit_box)
-	{
-		assert(0 != bits);
-
-		_bits		= bits;
-		_sz			= sz;
-		_type_id	= type_id;
-	}
-
-	//!	\brief Loading
-	/*!	\param[in] solid_ptr 
-	*/
-	void _set(solid_t *const solid_ptr)
+	void _use(solid_t *const solid_ptr)
 	{
 		assert(0 != solid_ptr);
 
@@ -388,12 +393,24 @@ protected:
 		_bits = reinterpret_cast<bits_type *>(_header + 1);
 	}
 
-	//!	\brief 
-	/*!	\param[in,out] solid_ptr
-		\param[in] bits_sz
-		\param[in] type_id
+	//!	\brief Attaches <i>%basic_chest</i> to memory block and initializes
+	//!	it to be a valid <i>%bit_box</i> data block (<i>solid block</i>)
+	/*!	\param[in,out] solid_ptr Pointer on memory block, that will become
+		valid <i>%bit_box</i> data block (<i>solid block</i>)
+		\param[in] bits_sz Size of stored data (in bytes)
+		\param[in] type_id Type identifier of stored data
+
+		This function marks (formats) raw memory block to be a valid
+		<i>%bit_box</i> data block (<i>solid block</i>). Note, that you must
+		specify size of stored data - be careful here, there is know polite
+		way to do this. After call to this function you will be allowed only
+		to change type identifier (through _set_type_id() function) and
+		stored data itself.
+
+		Possibly, it is a good idea, to make <i>%type_id</i> parameter
+		optional.
 	*/
-	void _set(solid_t *const solid_ptr, const bits_sz_type &bits_sz,
+	void _use(solid_t *const solid_ptr, const bits_sz_type &bits_sz,
 			  const type_id_type &type_id)
 	{
 		_set(solid_ptr);
@@ -404,24 +421,29 @@ protected:
 		_header->type_id = type_id;
 	}
 
-	//!	\brief
-	/*!
+	//!	\brief Brings <i>%basic_chest</i> down (makes it invalid)
+	/*!	Function sets all internal pointers to <i>0</i>, so <i>%basic_chest</i>
+		becomes invalid (bad).
 	*/
-	void _set_type_id(const type_id_type &type_id)
+	void _down()
 	{
-		assert(0 != _header);
-		
-		_header->type_id = type_id;
+		_header	= 0;
+		_bits	= 0;
 	}
 
 private:
 	// private data ------------------------------------------------------------
 
 	//!	\brief Pointer on header that precedes stored data
+	/*!	This pointer can be set to <i>0</i> to indicate that
+		<i>%basic_chest</i> is invalid (bad).
+	*/
 	_header_type *_header;
 
 	//! \brief Pointer on stored data
 	/*!	It is a pointer on raw data, without any headers or something else.
+		It can be set to <i>0</i> to indicate that <i>%basic_chest</i> is
+		invalid (bad).
 	*/
 	bits_type *_bits;
 
