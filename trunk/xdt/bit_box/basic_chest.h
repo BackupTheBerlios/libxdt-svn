@@ -4,7 +4,7 @@
 	\brief		Declarations and difinitions for xdt::bit_box::basic_chest
 				template class
 
-	\sa xdt::bit_box, xdt::bit_box::basic_chest
+	\sa xdt::bit_box::basic_chest, xdt::bit_box
 
 	\todo		Add detailed comment for basic_chest.h file
 */
@@ -110,20 +110,42 @@ namespace bit_box
 	template parameters). Here small example of what like template parameter
 	should be:
 	\code
-	xdt::bit_box::basic_chest<xdt::byte_t>		 bb1(0);
-	xdt::bit_box::basic_chest<const xdt::byte_t> bb2(0);
+	typedef xdt::bit_box::basic_chest<char, int> rw_chest;
+	typedef xdt::bit_box::basic_chest<const char, const int> r_chest;
+
+	// allocate some memory for solid block
+	char *const ptr = new char[rw_chest::solid_sz(sizeof(int))];
+
+	// attach to this raw and clean solid block
+	const rw_chest ch1(ptr, sizeof(int), rw_chest::bbt_sint32);
+
+	// set stored data
+	(*ch1.bits()) = 4;
+
+	// use copy constructor
+	const r_chest ch2(ch1);
+
+	// we will fail here, because this basic_chest is read only
+	// (*ch2.bits()) = 4;
+
+	// attach another basic_chest to our solid block
+	const r_chest ch3(ch1.solid_ptr());
+
+	// test result
+	std::cout << (*ch3.bits()) << std::endl;
+
+	// free memory
+	delete[] ptr;
 	\endcode
 
 	<i>%basic_chest</i> is not very useful by itself. However here is a small
 	example to simplify understanding of this class:
 	\code
-	//TODO: some example
-	xdt::bit_box::basic_bit_box<char> bb(0);
 	\endcode
 	
 	Few words about template parameters. <i>solid_t</i> serves to build
 	pointer type <i>(solid_t *)</i> that will represent pointers on solid
-	block. <i>bits_t</i> serves to build <i>(bits_t *)</i> pointer type that
+	blocks. <i>bits_t</i> serves to build <i>(bits_t *)</i> pointer type that
 	will represent pointers on data, stored in <i>%basic_chest</i>.
 
 	\todo basic_chest needs some example code
@@ -132,10 +154,24 @@ template <class solid_t, class bits_t>
 class basic_chest
 {
 public:
+	// friends -----------------------------------------------------------------
+
+	//!	\brief Friend <i>%basic_chest</i> with all kind of template parameters
+	/*!	We need this, to have access to private and protected members of
+		<i>%basic_chest</i> classes with different template parameters. This is
+		very important for converting constructor and converting assigment
+		operator.
+	*/
+	template <class solid_from_t, class bits_from_t>
+	friend class basic_chest;
+
 	// public types ------------------------------------------------------------
 
 	//!	\brief Alias for template parameter <i>solid_t</i>
-	/*!	
+	/*!	This type is used to construct type <i>(solid_type *)</i> for pointers
+		on <i>%bit_box</i> solid blocks (stored data with header). The main
+		idea is to have an opportunity to work with pointers on constant data
+		and with pointers on volatile data.
 	*/
 	typedef solid_t solid_type;
 
@@ -155,9 +191,14 @@ public:
 	typedef uint32_t bits_sz_type;
 
 	//! \brief Type for type identifiers. Just unsigned integer.
+	/*!
+	*/
 	typedef uint32_t type_id_type;
-	
-	typedef size_t
+
+	//!	\brief Type for size and count values
+	/*!
+	*/
+	typedef uint32_t size_type;
 
 	//!	\brief Type of this <i>%basic_bit_box</i>
 	/*!	It's very useful to have such type. With it there is no need to type
@@ -192,61 +233,75 @@ public:
 	//!	\name Constructors and destructors
 	//@{
 	
-	//! \brief Constructor
-	/*!	\param[in] bits Pointer on <i>%bit_box</i> data with header information
+	//! \brief Constructor (attachs to existing solid block)
+	/*!	\param[in] solid_ptr Pointer on valid <i>%bit_box</i> data block
+		(<i>solid block</i>)
 
-		This constructor extracts from <i>%bit_box</i> header type idenifier and
-		size of contained (stored) data.
+		\attention It's very important, that <b>valid</b> header must precedes
+		stored data.
 
-		\attention It's very important, that <b>real</b> header must precedes
-		<i>%bit_box</i> stored data.
+		\sa basic_chest::_use()
 	*/
 	basic_chest(solid_type *const solid_ptr)
 	{
-		_set(solid_ptr);
+		_use(solid_ptr);
 	}
 
-	//! \brief Constructor
-	/*!	\param[in] bits Pointer on raw bit_box data
-		\param[in] sz Size of bit_box data (raw data, without any headers)
-		pointed by <i>bits</i>
+	//! \brief Constructor (initializes new solid block)
+	/*!	\param[in,out] solid_ptr Pointer on memory block, that will become
+		valid <i>%bit_box</i> data block (<i>solid block</i>)
+		\param[in] bits_sz Size of stored data (in bytes)
+		\param[in] type_id Type identifier of stored data
 
-		This constructor sets type identifier to
-		<i>basic_bit_box::bbt_bit_box</i> so use it only with data that
-		is another bit_box.
+		\sa basic_chest::_use()
 	*/
 	basic_chest(solid_type *const solid_ptr, const bits_sz_type &bits_sz,
 				const type_id_type &type_id)
 	{
-		_set(solid_ptr, sz, bbt_bit_box);
+		_use(solid_ptr, bits_sz, type_id);
 	}
 
 	//! \brief Copy constructor
-	/*!	\param[in] src Source <i>basic_bit_box</i> to copy from. Nothing
+	/*!	\param[in] from Source <i>basic_bit_box</i> to copy from. Nothing
 		tricky, just copy as is.
 
 		\attention This copy constructor copies only pointers, not their data.
-		basic_bit_box does no any memory allocation in every its part.
+		<i>%basic_chest</i> does no any memory allocations in every its part.
 		Remember it :^)
+	*/
+	basic_chest(const self_type &from):
+		_header(from._header),
+		_bits(from._bits)
+	{
+	}
+
+	//! \brief Convert constructor
+	/*!	\param[in] from Source <i>basic_bit_box</i> to copy from. Nothing
+		tricky, just copy as is.
+
+		\attention This convert constructor copies only pointers, not their
+		data. <i>%basic_chest</i> does no any memory allocations in every
+		its part. Remember it :^)
 
 		\attention You can't assign <i>basic_bit_box</i> with
 		<i>bits_type</i>, for example, <i>const xdt::byte_t</i> to
 		<i>basic_bit_box</i> with <i>bits_type</i> <i>xdt::byte_t</i>. In
 		first case we have pointer on constant data. In second - pointer on
 		volatile data. So, if you will get a compilation error here - check
-		your code once again on such mistakes.
+		your code once again on such mistakes. The same rule is also valid for
+		<i>solid_type</i>.
 	*/
-	template <class t>
-	basic_bit_box(const basic_bit_box<t> &src):
-		_bits(reinterpret_cast<t *>(src.bits())),
-		_sz(src.sz()), _type_id(src.type_id())
+	template <class solid_from_t, class bits_from_t>
+	basic_chest(const basic_chest<solid_from_t, bits_from_t> &from):
+		_header(reinterpret_cast<_header_type *>(from._header)),
+		_bits(reinterpret_cast<bits_type *>(from._bits))
 	{
 	}
 
 	//!	\brief Destructor
-	/*!	\todo Do we really need it?
+	/*!	\todo Do we really need it? May be it must be virtual?
 	*/
-	virtual ~basic_bit_box()
+	virtual ~basic_chest()
 	{
 	}
 
@@ -255,6 +310,16 @@ public:
 
 	//!	\name Data access functions
 	//@{
+
+	//!	\brief Returns size of bit_box data
+	/*! \return Size of bit_box data in bytes (8 bits)
+	*/
+	const size_type &bits_sz() const
+	{
+		assert(0 != _bits);
+
+		return _header->bits_sz;
+	}
 
 	//!	\brief Returns pointer on bit_box data
 	/*!	\return Pointer on bit_box data
@@ -266,17 +331,7 @@ public:
 		return _bits;
 	}
 
-	//!	\brief Returns size of bit_box data
-	/*! \return Size of bit_box data in bytes (8 bits)
-	*/
-	size_type bits_sz() const
-	{
-		assert(0 != _bits);
-
-		return _header->bits_sz;
-	}
-
-	//!	\brief Returns type of stored data
+	//!	\brief Returns type identifier of stored data
 	/*! \return Constant reference on type identifier of stored data
 	*/
 	const type_id_type &type_id() const
@@ -286,7 +341,7 @@ public:
 		return _header->type_id;
 	}
 
-	//!	\brief Returns type of stored data
+	//!	\brief Returns type identifier of stored data
 	/*! \return Reference on type identifier of stored data
 
 		With this function you can change type identifier of stored data,
@@ -300,6 +355,64 @@ public:
 		assert(0 != _header);
 
 		return _header->type_id;
+	}
+
+	//!	\brief Returns total ammount of bytes occupied by solid block
+	/*!	\return Total size (in bytes) of solid block
+	*/
+	size_type solid_sz() const
+	{
+		return (sizeof(_header_type) + bits_sz());
+	}
+
+	//!	\brief Returns pointer on solid block
+	/*!	\return Pointer on solid block
+	*/
+	solid_type *solid_ptr() const
+	{
+		return reinterpret_cast<solid_type *>(_header);
+	}
+
+	//!	\brief Returns amount of bytes required for solid block that can
+	//!	store specified amount of data
+	/*!	\param[in] bits_sz Size (in  bytes) of stored data
+		\return Size of solid block (in bytes) that can hold specified
+		amount of sotored data.
+
+		\note Return value is invariant for different template parameters.
+		This is part of design and you can always count on this.
+	*/
+	static size_type solid_sz(const bits_sz_type &bits_sz)
+	{
+		return (sizeof(_header_type) + bits_sz);
+	}
+
+	//@}
+
+	//!	\name Assigment operators
+	//@{
+
+	//!	\brief Assigment operator
+	/*!	\param[in] from Source <i>%basic_chest</i> to copy information from
+	*/
+	self_type &operator = (const self_type &from)
+	{
+		_header	= tt._header;
+		_bits	= from._bits;
+
+		return (*this);
+	}
+
+	//!	\brief Assigment operator with conversion
+	/*!	\param[in] from Source <i>%basic_chest</i> to copy information from
+	*/
+	template <class solid_from_t, class bits_from_t>
+	self_type &operator = (const basic_chest<solid_from_t, bits_from_t> &from)
+	{
+		_header	= reinterpret_cast<_header_type *>(from._header);
+		_bits	= reinterpret_cast<bits_type *>(from._bits);
+
+		return (*this);
 	}
 
 	//@}
@@ -413,7 +526,7 @@ protected:
 	void _use(solid_t *const solid_ptr, const bits_sz_type &bits_sz,
 			  const type_id_type &type_id)
 	{
-		_set(solid_ptr);
+		_use(solid_ptr);
 
 		assert(0 != _header);
 
@@ -460,79 +573,3 @@ private:
 
 
 #endif	// XDT_BIT_BOX_BASIC_CHEST_INCLUDED
-
-
-
-
-
-//!	\brief Only physical level!!!
-/*!
-*/
-template <class solid_t, class bits_t>
-class basic_chest
-{
-public:
-	// public types ------------------------------------------------------------
-
-	typedef solid_t solid_type;
-	typedef solid_t *solid_ptr_type;
-
-	typedef bits_t bits_type;
-	typedef bits_t *bits_ptr_type;
-
-	typedef uint32_t bits_sz_type;
-	typedef uint32_t type_id_type;
-
-	// public methods ----------------------------------------------------------
-
-	//!	\name Constructors and destructors
-	//@{
-
-	//!	\brief Constructor loads existing chest
-	basic_chest(solid_type *const solid_ptr)
-	{
-		set
-	}
-
-	//!	\brief Constructor maps new chest
-	basic_chest(solid_type *const solid_ptr, const bits_sz_type &bits_sz,
-				const type_id_type &type_id = 0);
-
-	template <class s_t, class b_t>
-	basic_chest(const basic_chest<s_t, b_t> &from);
-
-	//@}
-
-	bits_sz();
-	solid_sz();
-
-	bits_sz_type solid_sz() const;
-	solid_type *solid_ptr() const;
-
-
-protected:
-	// protected types ---------------------------------------------------------
-
-	//! \brief bit_box data header
-	/*!	Header has size and type identifier of bit_box data. It's for bit_box
-		internal usage only.
-	*/
-	#pragma pack(push, 1)
-	struct _header_t
-	{
-		capacity_type capacity;	//!< \brief Size of bit_box data in bytes
-		type_id_type type_id;	//!< \brief Type identifier of bit_box data
-	};
-	#pragma pack(pop)
-
-private:
-	// private data ------------------------------------------------------------
-
-	//!	\brief Pointer on header that precedes stored data
-	_header_t *_header;
-
-	//! \brief Pointer on stored data
-	/*!	It is a pointer on raw data, without any headers or something else.
-	*/
-	bits_type *_bits;
-};

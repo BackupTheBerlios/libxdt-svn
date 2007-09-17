@@ -48,6 +48,11 @@ namespace bit_box
 //!	bit_box data.
 /*!
 
+	basic_chest
+
+	iterator
+	reader writer
+
 	\code
 	xdt::bit_box::writer writer;
 	writer.put(data_ptr, size, type);
