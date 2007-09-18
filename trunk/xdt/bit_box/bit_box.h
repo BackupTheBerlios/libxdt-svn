@@ -42,6 +42,33 @@ namespace bit_box
 {
 
 
+template <class solid_t, bits_t>
+class basic_iterator
+{
+public:
+	operator ++();
+	operator ->();
+	operator *()
+protected:
+private:
+};
+
+template <class solid_t, class bits_t>
+class basic_chain: basic_chest<solid_t, bits_t>
+{
+public:
+	typedef basic_iterator<solid_t, bits_t> iterator;
+	typedef basic_iterator<const solid_t, const bits_t> const_iterator;
+
+	begin();
+	end();
+protected:
+private:
+};
+
+class reader;
+class writer;
+
 ////////////////////////////////////////////////////////////////////////////////
 // bit_box class declaration
 //! \brief Elementary bit_box container that can read and iterate through

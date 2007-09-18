@@ -232,6 +232,13 @@ public:
 
 	//!	\name Constructors and destructors
 	//@{
+
+	//!	\brief Default constructor
+	/*!
+	*/
+	basic_chest(): _header(0), _bits(0)
+	{
+	}
 	
 	//! \brief Constructor (attachs to existing solid block)
 	/*!	\param[in] solid_ptr Pointer on valid <i>%bit_box</i> data block
@@ -311,12 +318,24 @@ public:
 	//!	\name Data access functions
 	//@{
 
+	//!	\brief Checks, if <i>%basic_chest</i> is down
+	/*!	\return <i>true</i> if <i>%basic_chest</i> is down
+
+		Down means "not pointing on some actual data" or "uninitialized".
+		<i>%basic_chest</i> can be in down state only if it was default
+		constructed or after call to _down() method.
+	*/
+	bool is_down() const
+	{
+		return (0 == _header || 0 == _bits);
+	}
+
 	//!	\brief Returns size of bit_box data
 	/*! \return Size of bit_box data in bytes (8 bits)
 	*/
 	const size_type &bits_sz() const
 	{
-		assert(0 != _bits);
+		assert(0 != _header);
 
 		return _header->bits_sz;
 	}
@@ -370,8 +389,15 @@ public:
 	*/
 	solid_type *solid_ptr() const
 	{
+		assert(0 != _header);
+
 		return reinterpret_cast<solid_type *>(_header);
 	}
+
+	//@}
+
+	//!	\name Static information
+	//@{
 
 	//!	\brief Returns amount of bytes required for solid block that can
 	//!	store specified amount of data
@@ -385,34 +411,6 @@ public:
 	static size_type solid_sz(const bits_sz_type &bits_sz)
 	{
 		return (sizeof(_header_type) + bits_sz);
-	}
-
-	//@}
-
-	//!	\name Assigment operators
-	//@{
-
-	//!	\brief Assigment operator
-	/*!	\param[in] from Source <i>%basic_chest</i> to copy information from
-	*/
-	self_type &operator = (const self_type &from)
-	{
-		_header	= tt._header;
-		_bits	= from._bits;
-
-		return (*this);
-	}
-
-	//!	\brief Assigment operator with conversion
-	/*!	\param[in] from Source <i>%basic_chest</i> to copy information from
-	*/
-	template <class solid_from_t, class bits_from_t>
-	self_type &operator = (const basic_chest<solid_from_t, bits_from_t> &from)
-	{
-		_header	= reinterpret_cast<_header_type *>(from._header);
-		_bits	= reinterpret_cast<bits_type *>(from._bits);
-
-		return (*this);
 	}
 
 	//@}
@@ -480,6 +478,9 @@ protected:
 
 	// protected methods -------------------------------------------------------
 
+	//!	\name Use methods
+	//@{
+
 	//!	\brief Attaches <i>%basic_chest</i> to valid <i>%bit_box</i> data block
 	/*!	\param[in] solid_ptr Pointer on valid <i>%bit_box</i> data block
 		(<i>solid block</i>)
@@ -543,6 +544,36 @@ protected:
 		_header	= 0;
 		_bits	= 0;
 	}
+
+	//@}
+
+	//!	\name Assigment operators
+	//@{
+
+	//!	\brief Assigment operator
+	/*!	\param[in] from Source <i>%basic_chest</i> to copy information from
+	*/
+	self_type &operator = (const self_type &from)
+	{
+		_header	= tt._header;
+		_bits	= from._bits;
+
+		return (*this);
+	}
+
+	//!	\brief Assigment operator with conversion
+	/*!	\param[in] from Source <i>%basic_chest</i> to copy information from
+	*/
+	template <class solid_from_t, class bits_from_t>
+	self_type &operator = (const basic_chest<solid_from_t, bits_from_t> &from)
+	{
+		_header	= reinterpret_cast<_header_type *>(from._header);
+		_bits	= reinterpret_cast<bits_type *>(from._bits);
+
+		return (*this);
+	}
+
+	//@}
 
 private:
 	// private data ------------------------------------------------------------

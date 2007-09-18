@@ -107,6 +107,9 @@
 				RelativePath="..\..\xdt\bit_box\basic_chest.h">
 			</File>
 			<File
+				RelativePath="..\..\xdt\bit_box\basic_iterator.h">
+			</File>
+			<File
 				RelativePath="..\..\xdt\bit_box\bit_box.h">
 			</File>
 		</Filter>
