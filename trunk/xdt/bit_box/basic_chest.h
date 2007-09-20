@@ -394,6 +394,34 @@ public:
 		return reinterpret_cast<solid_type *>(_header);
 	}
 
+	//!	\brief
+	/*!	
+	*/
+	solid_type *next_solid_ptr() const
+	{
+		/*
+		typedef typename _const_transplant<solid_type, xdt::byte_t>::t byte;
+
+		assert(0 != _bits);
+
+		return reinterpret_cast<solid_type *>((byte *)_bits + bits_sz());
+		*/
+	}
+
+	//!	\brief Tests, if another <i>%basic_chest</i> uses the same solid
+	//!	block
+	/*!	\param[in] b Another <i>%basic_chest</i>
+		\return <i>true</i> if another <i>%basic_chest</i> is using the same
+		solid block in memory, <i>false</i> otherwise
+	*/
+	template <class solid_b_t, class bits_b_t>
+	bool is_same_as(const basic_chest<solid_b_t, solid_b_t> &b) const
+	{
+		assert(_header != b._header || _bits == b._bits);
+
+		return (_header == b._header);
+	}
+
 	//@}
 
 	//!	\name Static information

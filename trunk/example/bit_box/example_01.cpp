@@ -1,4 +1,5 @@
 #include <xdt/bit_box/basic_chest.h>
+#include <xdt/bit_box/basic_iterator.h>
 #include <iostream>
 // #include <xdt/bit_box/bit_box.h>
 
@@ -19,6 +20,10 @@ private:
 int main()
 {
 
+	void *vptr = 0;
+	const int *iptr = 0;
+	if (iptr == vptr) return 0;
+
 	typedef xdt::bit_box::basic_chest<char, int> rw_chest;
 	typedef xdt::bit_box::basic_chest<const char, const int> r_chest;
 
@@ -36,6 +41,10 @@ int main()
 	const r_chest ch3(ch1.solid_ptr());
 
 	std::cout << (*ch3.bits()) << std::endl;
+
+	xdt::bit_box::basic_iterator<rw_chest> rw_iter;
+	xdt::bit_box::basic_iterator<const r_chest> r_iter;
+	rw_iter->bits();
 
 	delete[] ptr;
 

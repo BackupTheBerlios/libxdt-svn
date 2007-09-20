@@ -52,19 +52,30 @@ namespace bit_box
 // basic_iterator class declaration
 //! \brief 
 /*!
-	i = ch.begin();
-	(*i) = other;
 */
 template <class chest_t>
 class basic_iterator
 {
 public:
+	// friends -----------------------------------------------------------------
+
+	//!	\brief Friend <i>%basic_chest</i> with all kind of template parameters
+	/*!	We need this, to have access to private and protected members of
+		<i>%basic_chest</i> classes with different template parameters. This is
+		very important for converting constructor and converting assigment
+		operator.
+	*/
+	template <class chest_t>
+	friend class basic_iterator;
+
 	// public types ------------------------------------------------------------
 
 	//!	\brief Alias for template parameter <i>chest_t</i>
 	/*!	
 	*/
 	typedef chest_t chest_type;
+
+	typedef basic_iterator<chest_type> self_type;
 
 	// public constants --------------------------------------------------------
 
@@ -80,6 +91,23 @@ public:
 	{
 	}
 
+	//! \brief Copy constructor
+	/*!
+	*/
+	basic_iterator(const self_type &from):
+		_chest(from._chest)
+	{
+	}
+
+	//! \brief Convert constructor
+	/*!
+	*/
+	template <class chest_from_t>
+	basic_iterator(const basic_iterator<chest_from_t> &from):
+		_chest(from._chest)
+	{
+	}
+
 	//!	\brief Destructor
 	/*!	\todo Do we really need it? May be it must be virtual?
 	*/
@@ -89,14 +117,83 @@ public:
 
 	//@}
 
-	operator > ();
-	operator < ();
-	operator <= ();
-	operator >= ();
-	operator != ();
-	operator == ();
-	operator -> ();
-	operator * ();
+	//!	\name Equality operators
+	//@{
+
+	//!	\brief Equality
+	/*!
+	*/
+	template <class chest_b_t>
+	bool operator == (const basic_iterator<chest_b_t> &b) const
+	{
+		return (_chest.is_same_as(b._chest));
+	}
+
+	//!	\brief Inequality
+	/*!
+	*/
+	template <class chest_b_t>
+	bool operator != (const basic_iterator<chest_b_t> &b) const
+	{
+		return (!_chest.is_same_as(b._chest));
+	}
+
+	//@}
+
+	//!	\name Dereference and member selection operators
+	//@{
+
+	chest_type *operator -> ()
+	{
+		return (&_chest);
+	}
+
+	const chest_type *operator -> () const
+	{
+		return (&_chest);
+	}
+
+	chest_type &operator * ()
+	{
+		return _chest;
+	}
+
+	const chest_type &operator * () const
+	{
+		return _chest;
+	}
+
+	//@}
+
+	//!	\name Assigment operators
+	//@{
+
+	template <class chest_from_t>
+	self_type &operator = (const basic_iterator<chest_from_t> &from)
+	{
+		_chest = from._chest;
+
+		return (*this);
+	}
+
+	//@}
+
+	//!	\name Increment operators
+	//@{
+
+	//!	\brief Prefix increment operator
+	/*!
+	*/
+	self_type &operator++()
+	{
+	}
+
+	//!	\brief Postfix increment operator
+	self_type operator++(int)
+	{
+	}
+
+	//@}
 
 protected:
 	// protected types ---------------------------------------------------------
